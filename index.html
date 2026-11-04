@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stamboom & Relaties Dashboard</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVVJZ8DBR5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VVVJZ8DBR5');
+    </script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            max-width: 950px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 { color: #1a252f; margin-bottom: 8px; font-size: 26px; }
+        p.subtitle { color: #6c757d; margin-bottom: 20px; font-size: 15px; }
+        .status-box {
+            background: #e8f4fd;
+            border: 1px dashed #3498db;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .status-box button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .status-box button:hover { background-color: #2980b9; }
+        .radio-group {
+            margin-bottom: 12px;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+        .radio-group label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .section-title {
+            font-size: 18px;
+            color: #2c3e50;
+            margin: 20px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e1e4e8;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .card {
+            display: block;
+            text-decoration: none;
+            background: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 14px;
+            transition: all 0.2s ease-in-out;
+        }
+        .card:hover {
+            border-color: #0366d6;
+            box-shadow: 0 4px 12px rgba(3, 102, 214, 0.15);
+            transform: translateY(-2px);
+        }
+        .card.card-pdf {
+            border-color: #e74c3c;
+            background-color: #fffaf9;
+        }
+        .card.card-pdf:hover {
+            border-color: #c0392b;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+        }
+        .card h2 { font-size: 15px; color: #0366d6; margin-bottom: 4px; word-break: break-word; }
+        .card.card-pdf h2 { color: #c0392b; }
+        .card p { font-size: 12px; color: #586069; line-height: 1.4; }
+        .card-meta { font-size: 11px; color: #9ca3af; margin-top: 6px; border-top: 1px solid #f3f4f6; padding-top: 4px; }
+        .gedcom-info, .db-debug-info {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #333;
+            text-align: left;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 14px;
+            border-radius: 6px;
+            line-height: 1.5;
+            width: 100%;
+            border: 1px solid #d1d5db;
+        }
+        /* Modal styling voor Hoofdpersoon selectie */
+        #hoofdpersoonModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 450px;
+            max-width: 90%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+        .modal-content h3 { color: #2c3e50; margin-bottom: 8px; }
+        .modal-content input { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .modal-content select { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px; height: 180px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Stamboom & Relaties Overzicht - Indexed DB</h1>
+    <p class="subtitle">Centraal dashboard voor al je stamboomvisualisaties (<span id="url-filename"></span> - gewijzigd op: <span id="file-mod-date"></span>):</p>
+
+    
+
+    <div class="section-title">Stambomen & Dashboards</div>
+    <div class="grid" id="dashboardGrid">
+        <a href="verkeersbelasting_vlaanderen_2027.html" class="card" target="_blank">
+            <h2>Verkeersbel</h2>
+            <p>Verkeersbelasting</p>
+            <div class="card-meta">Laatste update: <span class="mod-date" data-file="UitklapStamboom.html">Laden...</span></div>
+        </a>
+       
+    </div>
+</div>
+
+<!-- Modal voor Hoofdpersoon selectie -->
+<div id="hoofdpersoonModal">
+    <div class="modal-content">
+        <h3>Selecteer Hoofdpersoon</h3>
+        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">Typ om te filteren of kies de gewenste hoofdpersoon:</p>
+        <input type="text" id="hpSearchInput" placeholder="Zoek op naam of ID...">
+        <select id="hpSelect" size="8"></select>
+        <div style="text-align: right;">
+            <button id="hpConfirmBtn">Bevestig Hoofdpersoon</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileDates = {
+        "DichtsBijzijndeVoorouder.html": "13/10/2026 22:59",
+        "Eilanden.html": "13/10/2026 01:02",
+        "FavorietenLijst.html": "13/10/2026 22:33",
+        "GedcomJsonTotalen.html": "13/10/2026 22:30",
+        "LandkaartHistoriek.html": "11/10/2026 11:01",
+        "Relaties.html": "13/10/2026 22:34",
+        "RelatiesFavorieten.html": "13/10/2026 22:36",
+        "RelatiesFavorietenHierarch.html": "13/10/2026 22:55",
+        "RelatiesRand.html": "13/10/2026 22:49",
+        "RelatieZoeker.html": "13/10/2026 23:00",
+        "Statistiek.html": "13/10/2026 23:03",
+        "UitklapStamboom.html": "13/10/2026 23:18",
+        "Zandloper.html": "13/10/2026 22:45",
+        "index.html": "22/10/2026 18:00",
+        "Filter.html": "14/10/2026 18:00",
+        "Waaier.html": "15/10/2026 10:10",
+        "gebruikershandleiding_stamboom.pdf": "19/10/2026 23:40"
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const pathSegments = window.location.pathname.split('/');
+        const filename = pathSegments.pop() || pathSegments.pop() || 'index.html';
+        document.getElementById('url-filename').innerText = filename;
+        document.getElementById('file-mod-date').innerText = fileDates[filename] || document.lastModified || 'Onbekend';
+
+        document.querySelectorAll('.mod-date').forEach(span => {
+            const fileName = span.getAttribute('data-file');
+            if (fileName && fileDates[fileName]) {
+                span.innerText = fileDates[fileName];
+            } else {
+                span.innerText = "Onbekend";
+            }
+        });
+
+        inspectIndexedDBEnvironment();
+        checkAndLoad();
+    });
+
+    const DEFAULT_FILE = 'Gedcom.ged';
+    const DB_NAME = 'GedcomDatabase';
+    const STORE_NAME = 'gedcomStore';
+    const FAV_STORE_NAME = 'favoritesStore';
+    const DB_VERSION = 5;
+
+    function updateStatus(text) {
+        console.log("STATUS:", text);
+        document.getElementById('statusText').innerHTML = text;
+    }
+
+    async function inspectIndexedDBEnvironment() {
+        const debugDiv = document.getElementById('dbDebugMeta');
+        let infoHtml = `<div class="db-debug-info"><strong>🔍 IndexedDB Hiërarchie, Opslag & Diagnostiek (Versie ${DB_VERSION}):</strong><br>`;
+
+        if (!window.indexedDB) {
+            infoHtml += `❌ <strong>Fout:</strong> IndexedDB wordt niet ondersteund of geblokkeerd.<br></div>`;
+            debugDiv.innerHTML = infoHtml;
+            return;
+        }
+
+        if (navigator.storage && navigator.storage.estimate) {
+            try {
+                const estimate = await navigator.storage.estimate();
+                const usedMB = (estimate.usage / (1024 * 1024)).toFixed(2);
+                const quotaMB = (estimate.quota / (1024 * 1024)).toFixed(0);
+                const percentage = estimate.quota && estimate.quota > 0 ? ((estimate.usage / estimate.quota) * 100).toFixed(1) : 0;
+                infoHtml += `📊 <strong>Browser Opslag:</strong> Gebruikt: <strong>${usedMB} MB</strong> van ca. ${quotaMB} MB (${percentage}%)<br>`;
+            } catch (e) {
+                infoHtml += `📊 <em>Browser opslagruimte ophalen niet toegestaan</em><br>`;
+            }
+        }
+
+        infoHtml += `✅ IndexedDB API actief.<br>`;
+
+        try {
+            const db = await new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onerror = () => reject(req.error);
+                req.onsuccess = () => resolve(req.result);
+                req.onupgradeneeded = (e) => {
+                    const database = e.target.result;
+                    if (!database.objectStoreNames.contains(STORE_NAME)) database.createObjectStore(STORE_NAME);
+                    if (!database.objectStoreNames.contains(FAV_STORE_NAME)) database.createObjectStore(FAV_STORE_NAME, { keyPath: 'id' });
+                };
+            });
+
+            infoHtml += `📂 <strong>Database:</strong> <code>${db.name}</code> (v${db.version})<br>`;
+            infoHtml += `&nbsp;&nbsp;&nbsp;&nbsp;└── <strong>Object Stores:</strong><br>`;
+            
+            if (db.objectStoreNames.length === 0) {
+                infoHtml += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Geen object stores gevonden.</em><br>`;
+            } else {
+                for (let i = 0; i < db.objectStoreNames.length; i++) {
+                    const storeName = db.objectStoreNames[i];
+                    const storeDetails = await getStoreDetails(db, storeName);
+                    infoHtml += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 🗄️ <code>${storeName}</code> — <em>(${storeDetails.count} items, ${storeDetails.sizeFormatted})</em><br>`;
+                }
+            }
+            db.close();
+        } catch (e) {
+            infoHtml += `⚠️ Kon object stores niet uitlezen: ${e.message}<br>`;
+        }
+
+        infoHtml += `</div>`;
+        debugDiv.innerHTML = infoHtml;
+    }
+
+    function getStoreDetails(db, storeName) {
+        return new Promise((resolve) => {
+            try {
+                const transaction = db.transaction(storeName, 'readonly');
+                const store = transaction.objectStore(storeName);
+                const countReq = store.count();
+                const getAllReq = store.getAll();
+
+                let count = 0;
+                let totalBytes = 0;
+
+                countReq.onsuccess = () => { count = countReq.result; };
+                
+                getAllReq.onsuccess = () => {
+                    const data = getAllReq.result;
+                    if (data) {
+                        try {
+                            totalBytes = new Blob([JSON.stringify(data)]).size;
+                        } catch (err) {
+                            totalBytes = 0;
+                        }
+                    }
+                };
+
+                transaction.oncomplete = () => {
+                    resolve({
+                        count: count,
+                        sizeFormatted: formatBytes(totalBytes)
+                    });
+                };
+
+                transaction.onerror = () => {
+                    resolve({ count: '?', sizeFormatted: '0 KB' });
+                };
+            } catch (err) {
+                resolve({ count: '?', sizeFormatted: '0 KB' });
+            }
+        });
+    }
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 KB';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function openGedcomDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve(request.result);
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME);
+                if (!db.objectStoreNames.contains(FAV_STORE_NAME)) db.createObjectStore(FAV_STORE_NAME, { keyPath: 'id' });
+            };
+        });
+    }
+
+    function extractPersonName(rec) {
+        let voornaam = '';
+        let achternaam = '';
+        (rec.children || []).forEach(c => {
+            if (c.tag === 'NAME') {
+                let rawName = c.value || '';
+                if (rawName.includes('/')) {
+                    let parts = rawName.split('/');
+                    voornaam = parts[0].trim();
+                    achternaam = parts[1] ? parts[1].trim() : '';
+                } else {
+                    voornaam = rawName;
+                }
+                if (c.children) {
+                    c.children.forEach(sub => {
+                        if (sub.tag === 'GIVN') voornaam = sub.value.trim();
+                        if (sub.tag === 'SURN') achternaam = sub.value.trim();
+                    });
+                }
+            }
+        });
+        return { voornaam, achternaam };
+    }
+
+    function parseAllIndividuals(textData) {
+        const lines = textData.split(/\r?\n/);
+        let records = [];
+        let currentRecord = null;
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (!trimmed) return;
+            const parts = trimmed.split(' ');
+            const level = parseInt(parts[0], 10);
+            if (isNaN(level)) return;
+
+            if (level === 0) {
+                if (currentRecord) records.push(currentRecord);
+                let id = '', tag = '';
+                if (parts[1].startsWith('@')) {
+                    id = parts[1].replace(/@/g, '');
+                    tag = parts[2] ? parts[2].toUpperCase() : '';
+                } else {
+                    tag = parts[1].toUpperCase();
+                }
+                currentRecord = { TAG: tag, id: id, children: [] };
+            } else if (currentRecord) {
+                let tag = parts[1] ? parts[1].toUpperCase() : '';
+                let value = parts.slice(2).join(' ').replace(/@/g, '');
+                const node = { tag: tag, value: value, children: [] };
+                if (level === 1) {
+                    currentRecord[tag] = value;
+                    currentRecord.children.push(node);
+                } else if (level === 2 && currentRecord.children.length > 0) {
+                    currentRecord.children[currentRecord.children.length - 1].children.push(node);
+                }
+            }
+        });
+        if (currentRecord) records.push(currentRecord);
+
+        let individuals = [];
+        records.forEach(rec => {
+            if ((rec.TAG || '').toUpperCase() === 'INDI') {
+                let nameInfo = extractPersonName(rec);
+                let birthYear = '';
+                (rec.children || []).forEach(c => {
+                    if (c.tag === 'BIRT' && c.children) {
+                        c.children.forEach(sub => {
+                            if (sub.tag === 'DATE') {
+                                let match = sub.value.match(/\b(1[6-9]\d{2}|20\d{2})\b/);
+                                if (match) birthYear = match[1];
+                            }
+                        });
+                    }
+                });
+                individuals.push({
+                    id: rec.id,
+                    voornaam: nameInfo.voornaam,
+                    achternaam: nameInfo.achternaam,
+                    geboortejaar: birthYear || 'Onbekend'
+                });
+            }
+        });
+        return individuals;
+    }
+
+    function selectHoofdpersoonInteractive(textData) {
+        return new Promise((resolve) => {
+            const individuals = parseAllIndividuals(textData);
+            const modal = document.getElementById('hoofdpersoonModal');
+            const select = document.getElementById('hpSelect');
+            const searchInput = document.getElementById('hpSearchInput');
+            const confirmBtn = document.getElementById('hpConfirmBtn');
+
+            function populateList(filter = '') {
+                select.innerHTML = '';
+                const filtered = individuals.filter(p => {
+                    const fullName = `${p.voornaam} ${p.achternaam} ${p.id}`.toLowerCase();
+                    return fullName.includes(filter.toLowerCase());
+                });
+
+                filtered.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = `${p.id}: ${p.voornaam} ${p.achternaam} (${p.geboortejaar})`;
+                    if (p.id === 'I5146') opt.selected = true;
+                    select.appendChild(opt);
+                });
+                if (select.options.length > 0 && select.selectedIndex === -1) {
+                    select.options[0].selected = true;
+                }
+            }
+
+            populateList();
+            modal.style.display = 'flex';
+
+            searchInput.oninput = (e) => {
+                populateList(e.target.value);
+            };
+
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+            newConfirmBtn.onclick = () => {
+                const selectedId = select.value;
+                const selectedPerson = individuals.find(p => p.id === selectedId) || individuals[0] || { id: 'I5146', voornaam: 'Onbekend', achternaam: '', geboortejaar: 'Onbekend' };
+                modal.style.display = 'none';
+                resolve(selectedPerson);
+            };
+        });
+    }
+
+    async function promptChangeHoofdpersoon() {
+        const saved = await getGedcomFromIDB();
+        if (!saved || !saved.data) {
+            alert('Geen GEDCOM data gevonden in IndexedDB.');
+            return;
+        }
+        let hp = await selectHoofdpersoonInteractive(saved.data);
+        const db = await openGedcomDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const st = tx.objectStore(STORE_NAME);
+        st.put(hp, 'HOOFDPERSOON');
+        
+        await saveGedcomToIDB(saved.data, hp.id);
+        processGedcomContent(saved.data, saved.timestamp, '✅ Hoofdpersoon gewijzigd en opgeslagen in IndexedDB.', hp);
+    }
+
+    async function precalculateAndStoreRelations(textData, rootIdOverride = null) {
+        try {
+            const lines = textData.split(/\r?\n/);
+            let records = [];
+            let currentRecord = null;
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (!trimmed) return;
+                const parts = trimmed.split(' ');
+                const level = parseInt(parts[0], 10);
+                if (isNaN(level)) return;
+
+                if (level === 0) {
+                    if (currentRecord) records.push(currentRecord);
+                    let id = '';
+                    let tag = '';
+                    if (parts[1].startsWith('@')) {
+                        id = parts[1].replace(/@/g, '');
+                        tag = parts[2] ? parts[2].toUpperCase() : '';
+                    } else {
+                        tag = parts[1].toUpperCase();
+                    }
+                    currentRecord = { TAG: tag, id: id, children: [] };
+                } else if (currentRecord) {
+                    let tag = parts[1] ? parts[1].toUpperCase() : '';
+                    let value = parts.slice(2).join(' ').replace(/@/g, '');
+                    const node = { tag: tag, value: value, children: [] };
+                    if (level === 1) {
+                        currentRecord[tag] = value;
+                        currentRecord.children.push(node);
+                    } else if (level === 2 && currentRecord.children.length > 0) {
+                        currentRecord.children[currentRecord.children.length - 1].children.push(node);
+                    }
+                }
+            });
+            if (currentRecord) records.push(currentRecord);
+
+            let globalGraph = {};
+            let indiMap = {};
+            records.forEach(rec => {
+                if ((rec.TAG || '').toUpperCase() === 'INDI') {
+                    if (!globalGraph[rec.id]) globalGraph[rec.id] = [];
+                    indiMap[rec.id] = extractPersonName(rec);
+                }
+            });
+
+            records.forEach(rec => {
+                if ((rec.TAG || '').toUpperCase() === 'FAM') {
+                    let husbId = '';
+                    let wifeId = '';
+                    let childrenIds = [];
+
+                    (rec.children || []).forEach(c => {
+                        if (c.tag === 'CHIL') childrenIds.push(c.value);
+                        if (c.tag === 'HUSB') husbId = c.value;
+                        if (c.tag === 'WIFE') wifeId = c.value;
+                    });
+
+                    if (husbId && wifeId && globalGraph[husbId] && globalGraph[wifeId]) {
+                        globalGraph[husbId].push({ target: wifeId, type: 'P' });
+                        globalGraph[wifeId].push({ target: husbId, type: 'P' });
+                    }
+
+                    childrenIds.forEach(childId => {
+                        if (globalGraph[childId]) {
+                            if (husbId && globalGraph[husbId]) {
+                                globalGraph[husbId].push({ target: childId, type: 'K' });
+                                globalGraph[childId].push({ target: husbId, type: 'V' });
+                            }
+                            if (wifeId && globalGraph[wifeId]) {
+                                globalGraph[wifeId].push({ target: childId, type: 'K' });
+                                globalGraph[childId].push({ target: wifeId, type: 'M' });
+                            }
+                        }
+                    });
+                }
+            });
+
+            let rootId = rootIdOverride && globalGraph[rootIdOverride] ? rootIdOverride : (globalGraph["I5146"] ? "I5146" : Object.keys(globalGraph)[0]);
+            let precalculatedPaths = {};
+            let precalculatedSteps = {};
+
+            if (rootId && globalGraph[rootId]) {
+                let queue = [[rootId, []]];
+                let visited = new Set([rootId]);
+
+                while (queue.length > 0) {
+                    let [currId, path] = queue.shift();
+                    precalculatedPaths[currId] = formatPathNotation(path);
+                    precalculatedSteps[currId] = path.length;
+
+                    for (let edge of (globalGraph[currId] || [])) {
+                        if (!visited.has(edge.target)) {
+                            visited.add(edge.target);
+                            queue.push([edge.target, [...path, edge.type]]);
+                        }
+                    }
+                }
+            }
+
+            let rootNameObj = indiMap[rootId] || { voornaam: '', achternaam: '' };
+            let rootNameInfo = `${rootId} (${rootNameObj.voornaam} ${rootNameObj.achternaam})`.trim();
+
+            return {
+                precalculatedPaths,
+                precalculatedSteps,
+                rootId: rootNameInfo
+            };
+        } catch (e) {
+            console.error("Fout bij vooraf berekenen relaties:", e);
+            return { precalculatedPaths: {}, precalculatedSteps: {}, rootId: "I5146" };
+        }
+    }
+
+    function formatPathNotation(steps) {
+        if (steps.length === 0) return "Hoofdpersoon";
+        let normalized = steps.map(s => (s === 'M' || s === 'V') ? 'MV' : s);
+        let formatted = [steps[0]];
+        for (let i = 1; i < steps.length; i++) {
+            if (normalized[i] !== normalized[i - 1]) {
+                formatted.push('-');
+            }
+            formatted.push(steps[i]);
+        }
+        return formatted.join('');
+    }
+
+    async function saveGedcomToIDB(textData, rootIdOverride = null) {
+        updateStatus('⏳ Gegevens, relatiepaden en stappen opslaan in IndexedDB...');
+        const db = await openGedcomDB();
+        const resultData = await precalculateAndStoreRelations(textData, rootIdOverride);
+
+        const now = new Date();
+        const timestampStr = now.toLocaleDateString('nl-BE', { 
+            year: 'numeric', month: '2-digit', day: '2-digit' 
+        }) + ' om ' + now.toLocaleTimeString('nl-BE', { 
+            hour: '2-digit', minute: '2-digit', second: '2-digit' 
+        });
+
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            store.put(textData, 'gedcomData');
+            store.put(resultData.precalculatedPaths, 'precalculatedPaths');
+            store.put(resultData.precalculatedSteps, 'precalculatedSteps');
+            store.put(resultData.rootId, 'rootPersonInfo');
+            const reqTime = store.put(timestampStr, 'gedcomTimestamp');
+            
+            reqTime.onsuccess = () => {
+                inspectIndexedDBEnvironment();
+                resolve(timestampStr);
+            };
+            reqTime.onerror = () => reject(reqTime.error);
+        });
+    }
+
+    async function getGedcomFromIDB() {
+        updateStatus('⏳ Controleren of GEDCOM in IndexedDB staat...');
+        const db = await openGedcomDB();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(STORE_NAME, 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const reqData = store.get('gedcomData');
+            const reqTime = store.get('gedcomTimestamp');
+            const reqHp = store.get('HOOFDPERSOON');
+
+            let result = {};
+            let resolved = false;
+
+            reqData.onsuccess = () => { result.data = reqData.result; checkDone(); };
+            reqTime.onsuccess = () => { result.timestamp = reqTime.result || 'Onbekend'; checkDone(); };
+            reqHp.onsuccess = () => { result.hoofdpersoon = reqHp.result || null; checkDone(); };
+
+            function checkDone() {
+                if (!resolved && result.data !== undefined && result.timestamp !== undefined && result.hoofdpersoon !== undefined) {
+                    resolved = true;
+                    resolve(result.data ? result : null);
+                }
+            }
+            transaction.oncomplete = () => { if (!resolved) { resolved = true; resolve(result.data ? result : null); } };
+            transaction.onerror = () => { if (!resolved) { resolved = true; reject(transaction.error); } };
+        });
+    }
+
+    async function handleModeChange() {
+        const mode = document.querySelector('input[name="loadMode"]:checked').value;
+        if (mode === 'local') {
+            const box = document.getElementById('statusBox');
+            box.style.backgroundColor = '#fffaf0';
+            box.style.borderColor = '#dd6b20';
+            box.style.color = '#7b341e';
+            updateStatus('⚠️ Handmatige selectie gekozen.');
+            document.getElementById('gedcomMeta').style.display = 'none';
+            document.getElementById('fileFallback').style.display = 'block';
+        } else {
+            checkAndLoad();
+        }
+    }
+
+    async function checkAndLoad() {
+        const mode = document.querySelector('input[name="loadMode"]:checked').value;
+        if (mode === 'local') return;
+
+        try {
+            const dbPromise = getGedcomFromIDB();
+            const timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('Timeout')), 3000));
+            const saved = await Promise.race([dbPromise, timeoutPromise]);
+            
+            if (saved && saved.data) {
+                let hp = saved.hoofdpersoon;
+                if (!hp) {
+                    hp = await selectHoofdpersoonInteractive(saved.data);
+                    const db = await openGedcomDB();
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    tx.objectStore(STORE_NAME).put(hp, 'HOOFDPERSOON');
+                    await saveGedcomToIDB(saved.data, hp.id);
+                }
+                processGedcomContent(saved.data, saved.timestamp, '✅ GEDCOM succesvol geladen uit de browser <strong>IndexedDB</strong>.', hp);
+                return;
+            }
+            throw new Error('Geen data in IndexedDB');
+        } catch (e) {
+            try {
+                updateStatus('⏳ Bezig met ophalen van standaard GEDCOM-bestand...');
+                const res = await fetch(DEFAULT_FILE);
+                if (res.ok) {
+                    const text = await res.text();
+                    let hp = await selectHoofdpersoonInteractive(text);
+                    const timestampStr = await saveGedcomToIDB(text, hp.id);
+                    const db = await openGedcomDB();
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    tx.objectStore(STORE_NAME).put(hp, 'HOOFDPERSOON');
+                    processGedcomContent(text, timestampStr, '✅ GEDCOM ingeladen en opgeslagen in IndexedDB.', hp);
+                    return;
+                }
+                throw new Error('Fetch mislukt');
+            } catch (err) {
+                showFilePickerFallback();
+            }
+        }
+    }
+
+    document.getElementById('gedcomFileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        updateStatus('⏳ Bezig met inlezen van gekozen bestand...');
+        const reader = new FileReader();
+        reader.onload = async function(evt) {
+            try {
+                const text = evt.target.result;
+                let hp = await selectHoofdpersoonInteractive(text);
+                const timestampStr = await saveGedcomToIDB(text, hp.id);
+                
+                const db = await openGedcomDB();
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                tx.objectStore(STORE_NAME).put(hp, 'HOOFDPERSOON');
+                
+                processGedcomContent(text, timestampStr, '✅ Bestand <strong>' + file.name + '</strong> ingelezen en opgeslagen in IndexedDB!', hp);
+                inspectIndexedDBEnvironment();
+            } catch (err) {
+                alert('Fout bij het opslaan in IndexedDB! Controleer of Incognito uit staat.');
+                showFilePickerFallback();
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    function processGedcomContent(text, timestamp, successMsg, hp) {
+        showSuccess(successMsg);
+        let sourceProgram = 'Onbekend';
+        let creationDate = 'Onbekend';
+        let personCount = 0;
+
+        const lines = text.split(/\r?\n/);
+        let inHeader = false;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line.startsWith('0 ') && line.toUpperCase().includes(' INDI')) personCount++;
+            if (line.startsWith('0 HEAD')) { inHeader = true; continue; }
+            if (inHeader && line.startsWith('0 ')) inHeader = false;
+            if (inHeader) {
+                if (line.startsWith('1 SOUR ')) sourceProgram = line.substring(7).trim();
+                else if (line.startsWith('2 NAME ') && lines[i-1] && lines[i-1].startsWith('1 SOUR')) sourceProgram = line.substring(7).trim();
+                if (line.startsWith('1 DATE ')) creationDate = line.substring(7).trim();
+                else if (line.startsWith('2 DATE ') && lines[i-1] && (lines[i-1].startsWith('1 SOUR') || lines[i-1].startsWith('1 FILE'))) creationDate = line.substring(7).trim();
+            }
+        }
+
+        const metaDiv = document.getElementById('gedcomMeta');
+        metaDiv.style.display = 'block';
+        metaDiv.innerHTML = `
+            <div class="gedcom-info">
+                ⭐ <strong>Hoofdpersoon:</strong> ${hp ? `${hp.voornaam} ${hp.achternaam} (${hp.id}) — Geboortejaar: ${hp.geboortejaar}` : 'Niet ingesteld'}<br>
+                💾 <strong>Laatste update in IndexedDB:</strong> ${timestamp || 'Onbekend'}<br>
+                📅 <strong>Creatiedatum (GEDCOM-bestand):</strong> ${creationDate}<br>
+                💻 <strong>Oorsprong (Programma):</strong> ${sourceProgram}<br>
+                👥 <strong>Aantal personen:</strong> ${personCount}<br>
+                <button onclick="promptChangeHoofdpersoon()">⚙️ Wijzig Hoofdpersoon</button>
+            </div>
+        `;
+    }
+
+    function showSuccess(msg) {
+        const box = document.getElementById('statusBox');
+        box.style.backgroundColor = '#e6fffa';
+        box.style.borderColor = '#38b2ac';
+        box.style.color = '#234e52';
+        document.getElementById('statusText').innerHTML = msg;
+        document.getElementById('fileFallback').style.display = 'none';
+    }
+
+    function showFilePickerFallback() {
+        const box = document.getElementById('statusBox');
+        box.style.backgroundColor = '#fffaf0';
+        box.style.borderColor = '#dd6b20';
+        box.style.color = '#7b341e';
+        document.getElementById('statusText').innerHTML = '⚠️ Geen gegevens gevonden of opslaan mislukt.';
+        document.getElementById('gedcomMeta').style.display = 'none';
+        document.getElementById('fileFallback').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
