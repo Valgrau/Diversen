@@ -1,827 +1,714 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stamboom & Relaties Dashboard</title>
-    
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVVJZ8DBR5"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-VVVJZ8DBR5');
-    </script>
-
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 30px 20px;
-        }
-        .container {
-            background-color: #ffffff;
-            max-width: 950px;
-            width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-        h1 { color: #1a252f; margin-bottom: 8px; font-size: 26px; }
-        p.subtitle { color: #6c757d; margin-bottom: 20px; font-size: 15px; }
-        .status-box {
-            background: #e8f4fd;
-            border: 1px dashed #3498db;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        .status-box button {
-            margin-top: 10px;
-            padding: 8px 16px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .status-box button:hover { background-color: #2980b9; }
-        .radio-group {
-            margin-bottom: 12px;
-            font-size: 14px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            align-items: center;
-        }
-        .radio-group label {
-            cursor: pointer;
-            font-weight: 500;
-        }
-        .section-title {
-            font-size: 18px;
-            color: #2c3e50;
-            margin: 20px 0 10px 0;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #e1e4e8;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .card {
-            display: block;
-            text-decoration: none;
-            background: #ffffff;
-            border: 1px solid #e1e4e8;
-            border-radius: 8px;
-            padding: 14px;
-            transition: all 0.2s ease-in-out;
-        }
-        .card:hover {
-            border-color: #0366d6;
-            box-shadow: 0 4px 12px rgba(3, 102, 214, 0.15);
-            transform: translateY(-2px);
-        }
-        .card.card-pdf {
-            border-color: #e74c3c;
-            background-color: #fffaf9;
-        }
-        .card.card-pdf:hover {
-            border-color: #c0392b;
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
-        }
-        .card h2 { font-size: 15px; color: #0366d6; margin-bottom: 4px; word-break: break-word; }
-        .card.card-pdf h2 { color: #c0392b; }
-        .card p { font-size: 12px; color: #586069; line-height: 1.4; }
-        .card-meta { font-size: 11px; color: #9ca3af; margin-top: 6px; border-top: 1px solid #f3f4f6; padding-top: 4px; }
-        .gedcom-info, .db-debug-info {
-            margin-top: 8px;
-            font-size: 13px;
-            color: #333;
-            text-align: left;
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 14px;
-            border-radius: 6px;
-            line-height: 1.5;
-            width: 100%;
-            border: 1px solid #d1d5db;
-        }
-        /* Modal styling voor Hoofdpersoon selectie */
-        #hoofdpersoonModal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            width: 450px;
-            max-width: 90%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            text-align: left;
-        }
-        .modal-content h3 { color: #2c3e50; margin-bottom: 8px; }
-        .modal-content input { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        .modal-content select { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px; height: 180px; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Binderveld rond 1840 – 3D-impressie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#cfd8dc;font-family:"EB Garamond",Georgia,serif;color:#3a2e1f}
+  #c{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .panel{position:fixed;left:16px;top:16px;max-width:340px;background:rgba(248,240,220,.93);border:1px solid #b9a57e;
+    box-shadow:0 6px 24px rgba(60,40,10,.25);border-radius:4px;padding:14px 16px 12px;max-height:calc(100vh - 40px);overflow:auto}
+  h1{font-size:22px;line-height:1.15;margin:0 0 4px;font-weight:600}
+  .sub{font-size:14.5px;font-style:italic;margin:0 0 10px;line-height:1.3;color:#5b4a32}
+  .grp{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:#7a6546;margin:8px 0 4px}
+  .btns{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+  button{font-family:inherit;font-size:14.5px;background:#efe2c2;border:1px solid #a88f63;color:#3a2e1f;border-radius:3px;padding:3px 8px;cursor:pointer}
+  button:hover{background:#e6d3a6}
+  button.on{background:#7a5c32;color:#fbf3df;border-color:#5d4524}
+  .legend{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:13.5px;margin-top:8px}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .legend i{width:13px;height:13px;border:1px solid rgba(0,0,0,.25);display:inline-block;flex:none}
+  .hint{font-size:12.5px;color:#6d5c42;margin-top:8px}
+  .toggle{position:fixed;left:16px;top:16px;display:none}
+  #load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#efe5cc;font-size:20px;font-style:italic;z-index:5;gap:10px}
+  #load small{font-size:14px;color:#7a6546}
+  @media (max-width:600px){.panel{max-width:none;right:16px;padding:10px 12px}.legend{display:none}h1{font-size:18px}.sub{display:none}}
+</style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Diversen</h1>
-    <p class="subtitle">Centraal dashboard voor al je stamboomvisualisaties (<span id="url-filename"></span> - gewijzigd op: <span id="file-mod-date"></span>):</p>
-
-    
-
-    <div class="section-title">Stambomen & Dashboards</div>
-    <div class="grid" id="dashboardGrid">
-        <a href="verkeersbelasting_vlaanderen_2027.html" class="card" target="_blank">
-            <h2>Verkeersbel</h2>
-            <p>Verkeersbelasting</p>
-            <div class="card-meta">Laatste update: <span class="mod-date" data-file="UitklapStamboom.html">Laden...</span></div>
-        </a>
-		
-		 <a href="statistiek.html" class="card" target="_blank">
-            <h2>statistiek</h2>
-            <p>statistiek</p>
-            <div class="card-meta">Laatste update: <span class="mod-date" data-file="UitklapStamboom.html">Laden...</span></div>
-        </a>
-       
-    </div>
+<canvas id="c"></canvas>
+<div id="load"><span id="lt">Het landschap wordt getekend…</span><small>Dit kan even duren: het hele grondgebied wordt opgebouwd.</small></div>
+<div class="panel" id="panel">
+  <h1>Binderveld rond 1840</h1>
+  <p class="sub">Driedimensionale impressie naar het kadasterplan: lemen hoeven met witte kalk, zwarte pekplint en strodak, het kasteel in baksteen met slotgracht, beken, akkers, weiden en boomgaarden in de zomer.</p>
+  <div class="grp">Standpunten</div>
+  <div class="btns">
+    <button data-view="overzicht" class="on">Hele grondgebied</button>
+    <button data-view="dorp">Dorpskern</button>
+    <button data-view="kasteel">Kasteel</button>
+    <button data-view="poort">Kasteelbrug</button>
+    <button data-view="kruis">Kruisstraat</button>
+    <button data-view="noord">Noordelijk gehucht</button>
+    <button data-view="beek">Beekvallei</button>
+    <button data-view="weg">Op de dorpsweg</button>
+  </div>
+  <div class="grp">Weergave</div>
+  <div class="btns">
+    <button id="rot">Rondvlucht</button>
+    <button id="qual" class="on">Hoge kwaliteit</button>
+    <button id="hide">Verberg</button>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="hint">Slepen om te draaien · scrollen om te zoomen · rechtermuisknop of twee vingers om te verschuiven. Zoom dicht in voor gras en graan.</div>
 </div>
-
-<!-- Modal voor Hoofdpersoon selectie -->
-<div id="hoofdpersoonModal">
-    <div class="modal-content">
-        <h3>Selecteer Hoofdpersoon</h3>
-        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">Typ om te filteren of kies de gewenste hoofdpersoon:</p>
-        <input type="text" id="hpSearchInput" placeholder="Zoek op naam of ID...">
-        <select id="hpSelect" size="8"></select>
-        <div style="text-align: right;">
-            <button id="hpConfirmBtn">Bevestig Hoofdpersoon</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    const fileDates = {
-        "DichtsBijzijndeVoorouder.html": "13/10/2026 22:59",
-        "Eilanden.html": "13/10/2026 01:02",
-        "FavorietenLijst.html": "13/10/2026 22:33",
-        "GedcomJsonTotalen.html": "13/10/2026 22:30",
-        "LandkaartHistoriek.html": "11/10/2026 11:01",
-        "Relaties.html": "13/10/2026 22:34",
-        "RelatiesFavorieten.html": "13/10/2026 22:36",
-        "RelatiesFavorietenHierarch.html": "13/10/2026 22:55",
-        "RelatiesRand.html": "13/10/2026 22:49",
-        "RelatieZoeker.html": "13/10/2026 23:00",
-        "Statistiek.html": "13/10/2026 23:03",
-        "UitklapStamboom.html": "13/10/2026 23:18",
-        "Zandloper.html": "13/10/2026 22:45",
-        "index.html": "22/10/2026 18:00",
-        "Filter.html": "14/10/2026 18:00",
-        "Waaier.html": "15/10/2026 10:10",
-        "gebruikershandleiding_stamboom.pdf": "19/10/2026 23:40"
-    };
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const pathSegments = window.location.pathname.split('/');
-        const filename = pathSegments.pop() || pathSegments.pop() || 'index.html';
-        document.getElementById('url-filename').innerText = filename;
-        document.getElementById('file-mod-date').innerText = fileDates[filename] || document.lastModified || 'Onbekend';
-
-        document.querySelectorAll('.mod-date').forEach(span => {
-            const fileName = span.getAttribute('data-file');
-            if (fileName && fileDates[fileName]) {
-                span.innerText = fileDates[fileName];
-            } else {
-                span.innerText = "Onbekend";
-            }
-        });
-
-        inspectIndexedDBEnvironment();
-        checkAndLoad();
-    });
-
-    const DEFAULT_FILE = 'Gedcom.ged';
-    const DB_NAME = 'GedcomDatabase';
-    const STORE_NAME = 'gedcomStore';
-    const FAV_STORE_NAME = 'favoritesStore';
-    const DB_VERSION = 5;
-
-    function updateStatus(text) {
-        console.log("STATUS:", text);
-        document.getElementById('statusText').innerHTML = text;
-    }
-
-    async function inspectIndexedDBEnvironment() {
-        const debugDiv = document.getElementById('dbDebugMeta');
-        let infoHtml = `<div class="db-debug-info"><strong>🔍 IndexedDB Hiërarchie, Opslag & Diagnostiek (Versie ${DB_VERSION}):</strong><br>`;
-
-        if (!window.indexedDB) {
-            infoHtml += `❌ <strong>Fout:</strong> IndexedDB wordt niet ondersteund of geblokkeerd.<br></div>`;
-            debugDiv.innerHTML = infoHtml;
-            return;
-        }
-
-        if (navigator.storage && navigator.storage.estimate) {
-            try {
-                const estimate = await navigator.storage.estimate();
-                const usedMB = (estimate.usage / (1024 * 1024)).toFixed(2);
-                const quotaMB = (estimate.quota / (1024 * 1024)).toFixed(0);
-                const percentage = estimate.quota && estimate.quota > 0 ? ((estimate.usage / estimate.quota) * 100).toFixed(1) : 0;
-                infoHtml += `📊 <strong>Browser Opslag:</strong> Gebruikt: <strong>${usedMB} MB</strong> van ca. ${quotaMB} MB (${percentage}%)<br>`;
-            } catch (e) {
-                infoHtml += `📊 <em>Browser opslagruimte ophalen niet toegestaan</em><br>`;
-            }
-        }
-
-        infoHtml += `✅ IndexedDB API actief.<br>`;
-
-        try {
-            const db = await new Promise((resolve, reject) => {
-                const req = indexedDB.open(DB_NAME, DB_VERSION);
-                req.onerror = () => reject(req.error);
-                req.onsuccess = () => resolve(req.result);
-                req.onupgradeneeded = (e) => {
-                    const database = e.target.result;
-                    if (!database.objectStoreNames.contains(STORE_NAME)) database.createObjectStore(STORE_NAME);
-                    if (!database.objectStoreNames.contains(FAV_STORE_NAME)) database.createObjectStore(FAV_STORE_NAME, { keyPath: 'id' });
-                };
-            });
-
-            infoHtml += `📂 <strong>Database:</strong> <code>${db.name}</code> (v${db.version})<br>`;
-            infoHtml += `&nbsp;&nbsp;&nbsp;&nbsp;└── <strong>Object Stores:</strong><br>`;
-            
-            if (db.objectStoreNames.length === 0) {
-                infoHtml += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Geen object stores gevonden.</em><br>`;
-            } else {
-                for (let i = 0; i < db.objectStoreNames.length; i++) {
-                    const storeName = db.objectStoreNames[i];
-                    const storeDetails = await getStoreDetails(db, storeName);
-                    infoHtml += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 🗄️ <code>${storeName}</code> — <em>(${storeDetails.count} items, ${storeDetails.sizeFormatted})</em><br>`;
-                }
-            }
-            db.close();
-        } catch (e) {
-            infoHtml += `⚠️ Kon object stores niet uitlezen: ${e.message}<br>`;
-        }
-
-        infoHtml += `</div>`;
-        debugDiv.innerHTML = infoHtml;
-    }
-
-    function getStoreDetails(db, storeName) {
-        return new Promise((resolve) => {
-            try {
-                const transaction = db.transaction(storeName, 'readonly');
-                const store = transaction.objectStore(storeName);
-                const countReq = store.count();
-                const getAllReq = store.getAll();
-
-                let count = 0;
-                let totalBytes = 0;
-
-                countReq.onsuccess = () => { count = countReq.result; };
-                
-                getAllReq.onsuccess = () => {
-                    const data = getAllReq.result;
-                    if (data) {
-                        try {
-                            totalBytes = new Blob([JSON.stringify(data)]).size;
-                        } catch (err) {
-                            totalBytes = 0;
-                        }
-                    }
-                };
-
-                transaction.oncomplete = () => {
-                    resolve({
-                        count: count,
-                        sizeFormatted: formatBytes(totalBytes)
-                    });
-                };
-
-                transaction.onerror = () => {
-                    resolve({ count: '?', sizeFormatted: '0 KB' });
-                };
-            } catch (err) {
-                resolve({ count: '?', sizeFormatted: '0 KB' });
-            }
-        });
-    }
-
-    function formatBytes(bytes) {
-        if (bytes === 0) return '0 KB';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    function openGedcomDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, DB_VERSION);
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => resolve(request.result);
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME);
-                if (!db.objectStoreNames.contains(FAV_STORE_NAME)) db.createObjectStore(FAV_STORE_NAME, { keyPath: 'id' });
-            };
-        });
-    }
-
-    function extractPersonName(rec) {
-        let voornaam = '';
-        let achternaam = '';
-        (rec.children || []).forEach(c => {
-            if (c.tag === 'NAME') {
-                let rawName = c.value || '';
-                if (rawName.includes('/')) {
-                    let parts = rawName.split('/');
-                    voornaam = parts[0].trim();
-                    achternaam = parts[1] ? parts[1].trim() : '';
-                } else {
-                    voornaam = rawName;
-                }
-                if (c.children) {
-                    c.children.forEach(sub => {
-                        if (sub.tag === 'GIVN') voornaam = sub.value.trim();
-                        if (sub.tag === 'SURN') achternaam = sub.value.trim();
-                    });
-                }
-            }
-        });
-        return { voornaam, achternaam };
-    }
-
-    function parseAllIndividuals(textData) {
-        const lines = textData.split(/\r?\n/);
-        let records = [];
-        let currentRecord = null;
-        lines.forEach(line => {
-            const trimmed = line.trim();
-            if (!trimmed) return;
-            const parts = trimmed.split(' ');
-            const level = parseInt(parts[0], 10);
-            if (isNaN(level)) return;
-
-            if (level === 0) {
-                if (currentRecord) records.push(currentRecord);
-                let id = '', tag = '';
-                if (parts[1].startsWith('@')) {
-                    id = parts[1].replace(/@/g, '');
-                    tag = parts[2] ? parts[2].toUpperCase() : '';
-                } else {
-                    tag = parts[1].toUpperCase();
-                }
-                currentRecord = { TAG: tag, id: id, children: [] };
-            } else if (currentRecord) {
-                let tag = parts[1] ? parts[1].toUpperCase() : '';
-                let value = parts.slice(2).join(' ').replace(/@/g, '');
-                const node = { tag: tag, value: value, children: [] };
-                if (level === 1) {
-                    currentRecord[tag] = value;
-                    currentRecord.children.push(node);
-                } else if (level === 2 && currentRecord.children.length > 0) {
-                    currentRecord.children[currentRecord.children.length - 1].children.push(node);
-                }
-            }
-        });
-        if (currentRecord) records.push(currentRecord);
-
-        let individuals = [];
-        records.forEach(rec => {
-            if ((rec.TAG || '').toUpperCase() === 'INDI') {
-                let nameInfo = extractPersonName(rec);
-                let birthYear = '';
-                (rec.children || []).forEach(c => {
-                    if (c.tag === 'BIRT' && c.children) {
-                        c.children.forEach(sub => {
-                            if (sub.tag === 'DATE') {
-                                let match = sub.value.match(/\b(1[6-9]\d{2}|20\d{2})\b/);
-                                if (match) birthYear = match[1];
-                            }
-                        });
-                    }
-                });
-                individuals.push({
-                    id: rec.id,
-                    voornaam: nameInfo.voornaam,
-                    achternaam: nameInfo.achternaam,
-                    geboortejaar: birthYear || 'Onbekend'
-                });
-            }
-        });
-        return individuals;
-    }
-
-    function selectHoofdpersoonInteractive(textData) {
-        return new Promise((resolve) => {
-            const individuals = parseAllIndividuals(textData);
-            const modal = document.getElementById('hoofdpersoonModal');
-            const select = document.getElementById('hpSelect');
-            const searchInput = document.getElementById('hpSearchInput');
-            const confirmBtn = document.getElementById('hpConfirmBtn');
-
-            function populateList(filter = '') {
-                select.innerHTML = '';
-                const filtered = individuals.filter(p => {
-                    const fullName = `${p.voornaam} ${p.achternaam} ${p.id}`.toLowerCase();
-                    return fullName.includes(filter.toLowerCase());
-                });
-
-                filtered.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p.id;
-                    opt.textContent = `${p.id}: ${p.voornaam} ${p.achternaam} (${p.geboortejaar})`;
-                    if (p.id === 'I5146') opt.selected = true;
-                    select.appendChild(opt);
-                });
-                if (select.options.length > 0 && select.selectedIndex === -1) {
-                    select.options[0].selected = true;
-                }
-            }
-
-            populateList();
-            modal.style.display = 'flex';
-
-            searchInput.oninput = (e) => {
-                populateList(e.target.value);
-            };
-
-            const newConfirmBtn = confirmBtn.cloneNode(true);
-            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-
-            newConfirmBtn.onclick = () => {
-                const selectedId = select.value;
-                const selectedPerson = individuals.find(p => p.id === selectedId) || individuals[0] || { id: 'I5146', voornaam: 'Onbekend', achternaam: '', geboortejaar: 'Onbekend' };
-                modal.style.display = 'none';
-                resolve(selectedPerson);
-            };
-        });
-    }
-
-    async function promptChangeHoofdpersoon() {
-        const saved = await getGedcomFromIDB();
-        if (!saved || !saved.data) {
-            alert('Geen GEDCOM data gevonden in IndexedDB.');
-            return;
-        }
-        let hp = await selectHoofdpersoonInteractive(saved.data);
-        const db = await openGedcomDB();
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const st = tx.objectStore(STORE_NAME);
-        st.put(hp, 'HOOFDPERSOON');
-        
-        await saveGedcomToIDB(saved.data, hp.id);
-        processGedcomContent(saved.data, saved.timestamp, '✅ Hoofdpersoon gewijzigd en opgeslagen in IndexedDB.', hp);
-    }
-
-    async function precalculateAndStoreRelations(textData, rootIdOverride = null) {
-        try {
-            const lines = textData.split(/\r?\n/);
-            let records = [];
-            let currentRecord = null;
-
-            lines.forEach(line => {
-                const trimmed = line.trim();
-                if (!trimmed) return;
-                const parts = trimmed.split(' ');
-                const level = parseInt(parts[0], 10);
-                if (isNaN(level)) return;
-
-                if (level === 0) {
-                    if (currentRecord) records.push(currentRecord);
-                    let id = '';
-                    let tag = '';
-                    if (parts[1].startsWith('@')) {
-                        id = parts[1].replace(/@/g, '');
-                        tag = parts[2] ? parts[2].toUpperCase() : '';
-                    } else {
-                        tag = parts[1].toUpperCase();
-                    }
-                    currentRecord = { TAG: tag, id: id, children: [] };
-                } else if (currentRecord) {
-                    let tag = parts[1] ? parts[1].toUpperCase() : '';
-                    let value = parts.slice(2).join(' ').replace(/@/g, '');
-                    const node = { tag: tag, value: value, children: [] };
-                    if (level === 1) {
-                        currentRecord[tag] = value;
-                        currentRecord.children.push(node);
-                    } else if (level === 2 && currentRecord.children.length > 0) {
-                        currentRecord.children[currentRecord.children.length - 1].children.push(node);
-                    }
-                }
-            });
-            if (currentRecord) records.push(currentRecord);
-
-            let globalGraph = {};
-            let indiMap = {};
-            records.forEach(rec => {
-                if ((rec.TAG || '').toUpperCase() === 'INDI') {
-                    if (!globalGraph[rec.id]) globalGraph[rec.id] = [];
-                    indiMap[rec.id] = extractPersonName(rec);
-                }
-            });
-
-            records.forEach(rec => {
-                if ((rec.TAG || '').toUpperCase() === 'FAM') {
-                    let husbId = '';
-                    let wifeId = '';
-                    let childrenIds = [];
-
-                    (rec.children || []).forEach(c => {
-                        if (c.tag === 'CHIL') childrenIds.push(c.value);
-                        if (c.tag === 'HUSB') husbId = c.value;
-                        if (c.tag === 'WIFE') wifeId = c.value;
-                    });
-
-                    if (husbId && wifeId && globalGraph[husbId] && globalGraph[wifeId]) {
-                        globalGraph[husbId].push({ target: wifeId, type: 'P' });
-                        globalGraph[wifeId].push({ target: husbId, type: 'P' });
-                    }
-
-                    childrenIds.forEach(childId => {
-                        if (globalGraph[childId]) {
-                            if (husbId && globalGraph[husbId]) {
-                                globalGraph[husbId].push({ target: childId, type: 'K' });
-                                globalGraph[childId].push({ target: husbId, type: 'V' });
-                            }
-                            if (wifeId && globalGraph[wifeId]) {
-                                globalGraph[wifeId].push({ target: childId, type: 'K' });
-                                globalGraph[childId].push({ target: wifeId, type: 'M' });
-                            }
-                        }
-                    });
-                }
-            });
-
-            let rootId = rootIdOverride && globalGraph[rootIdOverride] ? rootIdOverride : (globalGraph["I5146"] ? "I5146" : Object.keys(globalGraph)[0]);
-            let precalculatedPaths = {};
-            let precalculatedSteps = {};
-
-            if (rootId && globalGraph[rootId]) {
-                let queue = [[rootId, []]];
-                let visited = new Set([rootId]);
-
-                while (queue.length > 0) {
-                    let [currId, path] = queue.shift();
-                    precalculatedPaths[currId] = formatPathNotation(path);
-                    precalculatedSteps[currId] = path.length;
-
-                    for (let edge of (globalGraph[currId] || [])) {
-                        if (!visited.has(edge.target)) {
-                            visited.add(edge.target);
-                            queue.push([edge.target, [...path, edge.type]]);
-                        }
-                    }
-                }
-            }
-
-            let rootNameObj = indiMap[rootId] || { voornaam: '', achternaam: '' };
-            let rootNameInfo = `${rootId} (${rootNameObj.voornaam} ${rootNameObj.achternaam})`.trim();
-
-            return {
-                precalculatedPaths,
-                precalculatedSteps,
-                rootId: rootNameInfo
-            };
-        } catch (e) {
-            console.error("Fout bij vooraf berekenen relaties:", e);
-            return { precalculatedPaths: {}, precalculatedSteps: {}, rootId: "I5146" };
-        }
-    }
-
-    function formatPathNotation(steps) {
-        if (steps.length === 0) return "Hoofdpersoon";
-        let normalized = steps.map(s => (s === 'M' || s === 'V') ? 'MV' : s);
-        let formatted = [steps[0]];
-        for (let i = 1; i < steps.length; i++) {
-            if (normalized[i] !== normalized[i - 1]) {
-                formatted.push('-');
-            }
-            formatted.push(steps[i]);
-        }
-        return formatted.join('');
-    }
-
-    async function saveGedcomToIDB(textData, rootIdOverride = null) {
-        updateStatus('⏳ Gegevens, relatiepaden en stappen opslaan in IndexedDB...');
-        const db = await openGedcomDB();
-        const resultData = await precalculateAndStoreRelations(textData, rootIdOverride);
-
-        const now = new Date();
-        const timestampStr = now.toLocaleDateString('nl-BE', { 
-            year: 'numeric', month: '2-digit', day: '2-digit' 
-        }) + ' om ' + now.toLocaleTimeString('nl-BE', { 
-            hour: '2-digit', minute: '2-digit', second: '2-digit' 
-        });
-
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(STORE_NAME, 'readwrite');
-            const store = transaction.objectStore(STORE_NAME);
-            store.put(textData, 'gedcomData');
-            store.put(resultData.precalculatedPaths, 'precalculatedPaths');
-            store.put(resultData.precalculatedSteps, 'precalculatedSteps');
-            store.put(resultData.rootId, 'rootPersonInfo');
-            const reqTime = store.put(timestampStr, 'gedcomTimestamp');
-            
-            reqTime.onsuccess = () => {
-                inspectIndexedDBEnvironment();
-                resolve(timestampStr);
-            };
-            reqTime.onerror = () => reject(reqTime.error);
-        });
-    }
-
-    async function getGedcomFromIDB() {
-        updateStatus('⏳ Controleren of GEDCOM in IndexedDB staat...');
-        const db = await openGedcomDB();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(STORE_NAME, 'readonly');
-            const store = transaction.objectStore(STORE_NAME);
-            const reqData = store.get('gedcomData');
-            const reqTime = store.get('gedcomTimestamp');
-            const reqHp = store.get('HOOFDPERSOON');
-
-            let result = {};
-            let resolved = false;
-
-            reqData.onsuccess = () => { result.data = reqData.result; checkDone(); };
-            reqTime.onsuccess = () => { result.timestamp = reqTime.result || 'Onbekend'; checkDone(); };
-            reqHp.onsuccess = () => { result.hoofdpersoon = reqHp.result || null; checkDone(); };
-
-            function checkDone() {
-                if (!resolved && result.data !== undefined && result.timestamp !== undefined && result.hoofdpersoon !== undefined) {
-                    resolved = true;
-                    resolve(result.data ? result : null);
-                }
-            }
-            transaction.oncomplete = () => { if (!resolved) { resolved = true; resolve(result.data ? result : null); } };
-            transaction.onerror = () => { if (!resolved) { resolved = true; reject(transaction.error); } };
-        });
-    }
-
-    async function handleModeChange() {
-        const mode = document.querySelector('input[name="loadMode"]:checked').value;
-        if (mode === 'local') {
-            const box = document.getElementById('statusBox');
-            box.style.backgroundColor = '#fffaf0';
-            box.style.borderColor = '#dd6b20';
-            box.style.color = '#7b341e';
-            updateStatus('⚠️ Handmatige selectie gekozen.');
-            document.getElementById('gedcomMeta').style.display = 'none';
-            document.getElementById('fileFallback').style.display = 'block';
-        } else {
-            checkAndLoad();
-        }
-    }
-
-    async function checkAndLoad() {
-        const mode = document.querySelector('input[name="loadMode"]:checked').value;
-        if (mode === 'local') return;
-
-        try {
-            const dbPromise = getGedcomFromIDB();
-            const timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('Timeout')), 3000));
-            const saved = await Promise.race([dbPromise, timeoutPromise]);
-            
-            if (saved && saved.data) {
-                let hp = saved.hoofdpersoon;
-                if (!hp) {
-                    hp = await selectHoofdpersoonInteractive(saved.data);
-                    const db = await openGedcomDB();
-                    const tx = db.transaction(STORE_NAME, 'readwrite');
-                    tx.objectStore(STORE_NAME).put(hp, 'HOOFDPERSOON');
-                    await saveGedcomToIDB(saved.data, hp.id);
-                }
-                processGedcomContent(saved.data, saved.timestamp, '✅ GEDCOM succesvol geladen uit de browser <strong>IndexedDB</strong>.', hp);
-                return;
-            }
-            throw new Error('Geen data in IndexedDB');
-        } catch (e) {
-            try {
-                updateStatus('⏳ Bezig met ophalen van standaard GEDCOM-bestand...');
-                const res = await fetch(DEFAULT_FILE);
-                if (res.ok) {
-                    const text = await res.text();
-                    let hp = await selectHoofdpersoonInteractive(text);
-                    const timestampStr = await saveGedcomToIDB(text, hp.id);
-                    const db = await openGedcomDB();
-                    const tx = db.transaction(STORE_NAME, 'readwrite');
-                    tx.objectStore(STORE_NAME).put(hp, 'HOOFDPERSOON');
-                    processGedcomContent(text, timestampStr, '✅ GEDCOM ingeladen en opgeslagen in IndexedDB.', hp);
-                    return;
-                }
-                throw new Error('Fetch mislukt');
-            } catch (err) {
-                showFilePickerFallback();
-            }
-        }
-    }
-
-    document.getElementById('gedcomFileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        updateStatus('⏳ Bezig met inlezen van gekozen bestand...');
-        const reader = new FileReader();
-        reader.onload = async function(evt) {
-            try {
-                const text = evt.target.result;
-                let hp = await selectHoofdpersoonInteractive(text);
-                const timestampStr = await saveGedcomToIDB(text, hp.id);
-                
-                const db = await openGedcomDB();
-                const tx = db.transaction(STORE_NAME, 'readwrite');
-                tx.objectStore(STORE_NAME).put(hp, 'HOOFDPERSOON');
-                
-                processGedcomContent(text, timestampStr, '✅ Bestand <strong>' + file.name + '</strong> ingelezen en opgeslagen in IndexedDB!', hp);
-                inspectIndexedDBEnvironment();
-            } catch (err) {
-                alert('Fout bij het opslaan in IndexedDB! Controleer of Incognito uit staat.');
-                showFilePickerFallback();
-            }
-        };
-        reader.readAsText(file);
-    });
-
-    function processGedcomContent(text, timestamp, successMsg, hp) {
-        showSuccess(successMsg);
-        let sourceProgram = 'Onbekend';
-        let creationDate = 'Onbekend';
-        let personCount = 0;
-
-        const lines = text.split(/\r?\n/);
-        let inHeader = false;
-
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (line.startsWith('0 ') && line.toUpperCase().includes(' INDI')) personCount++;
-            if (line.startsWith('0 HEAD')) { inHeader = true; continue; }
-            if (inHeader && line.startsWith('0 ')) inHeader = false;
-            if (inHeader) {
-                if (line.startsWith('1 SOUR ')) sourceProgram = line.substring(7).trim();
-                else if (line.startsWith('2 NAME ') && lines[i-1] && lines[i-1].startsWith('1 SOUR')) sourceProgram = line.substring(7).trim();
-                if (line.startsWith('1 DATE ')) creationDate = line.substring(7).trim();
-                else if (line.startsWith('2 DATE ') && lines[i-1] && (lines[i-1].startsWith('1 SOUR') || lines[i-1].startsWith('1 FILE'))) creationDate = line.substring(7).trim();
-            }
-        }
-
-        const metaDiv = document.getElementById('gedcomMeta');
-        metaDiv.style.display = 'block';
-        metaDiv.innerHTML = `
-            <div class="gedcom-info">
-                ⭐ <strong>Hoofdpersoon:</strong> ${hp ? `${hp.voornaam} ${hp.achternaam} (${hp.id}) — Geboortejaar: ${hp.geboortejaar}` : 'Niet ingesteld'}<br>
-                💾 <strong>Laatste update in IndexedDB:</strong> ${timestamp || 'Onbekend'}<br>
-                📅 <strong>Creatiedatum (GEDCOM-bestand):</strong> ${creationDate}<br>
-                💻 <strong>Oorsprong (Programma):</strong> ${sourceProgram}<br>
-                👥 <strong>Aantal personen:</strong> ${personCount}<br>
-                <button onclick="promptChangeHoofdpersoon()">⚙️ Wijzig Hoofdpersoon</button>
-            </div>
-        `;
-    }
-
-    function showSuccess(msg) {
-        const box = document.getElementById('statusBox');
-        box.style.backgroundColor = '#e6fffa';
-        box.style.borderColor = '#38b2ac';
-        box.style.color = '#234e52';
-        document.getElementById('statusText').innerHTML = msg;
-        document.getElementById('fileFallback').style.display = 'none';
-    }
-
-    function showFilePickerFallback() {
-        const box = document.getElementById('statusBox');
-        box.style.backgroundColor = '#fffaf0';
-        box.style.borderColor = '#dd6b20';
-        box.style.color = '#7b341e';
-        document.getElementById('statusText').innerHTML = '⚠️ Geen gegevens gevonden of opslaan mislukt.';
-        document.getElementById('gedcomMeta').style.display = 'none';
-        document.getElementById('fileFallback').style.display = 'block';
-    }
+<button class="toggle" id="show">Info</button>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
 </script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { Sky } from 'three/addons/objects/Sky.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
+const setStatus = t => { const l=document.getElementById('lt'); if(l) l.textContent=t; };
+const frame = () => new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+
+let seed = 18401841;
+const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const rr = (a,b) => a + (b-a)*rnd();
+const hash2 = (i,j) => { let h = Math.imul(i|0,374761393) + Math.imul(j|0,668265263); h = Math.imul(h ^ (h>>>13), 1274126177); return ((h ^ (h>>>16))>>>0)/4294967296; };
+const sm = t => t*t*(3-2*t);
+const lin = hex => new THREE.Color(hex);
+const srgb = (r,g,b) => new THREE.Color().setRGB(r,g,b,THREE.SRGBColorSpace);
+const UP = new THREE.Vector3(0,1,0);
+
+/* ---------- data ---------- */
+async function loadImg(src){ const im=new Image(); im.src=src; await im.decode(); return im; }
+function pixels(im){ const c=document.createElement('canvas'); c.width=im.width; c.height=im.height; const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(im,0,0); return x.getImageData(0,0,im.width,im.height).data; }
+
+let MW, MH, HN, HM, HGT, CLS, BLD, TREES, WAT;
+const hAtRaw = (X,Z) => {
+  const fx=(X+MW/2)/MW*(HN-1), fz=(Z+MH/2)/MH*(HM-1);
+  const i=Math.max(0,Math.min(HN-2,Math.floor(fx))), j=Math.max(0,Math.min(HM-2,Math.floor(fz)));
+  const u=Math.max(0,Math.min(1,fx-i)), v=Math.max(0,Math.min(1,fz-j));
+  const a=HGT[j*HN+i], b=HGT[j*HN+i+1], c=HGT[(j+1)*HN+i], d=HGT[(j+1)*HN+i+1];
+  return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v;
+};
+const edgeFade = (X,Z) => { const ex=Math.min(X+MW/2, MW/2-X), ez=Math.min(Z+MH/2, MH/2-Z); return sm(Math.max(0,Math.min(1,Math.min(ex,ez)/70))); };
+const hAt = (X,Z) => hAtRaw(X,Z)*edgeFade(X,Z);
+const clsAt = (X,Z) => { const x=Math.floor(X+MW/2), z=Math.floor(Z+MH/2); if(x<0||z<0||x>=MW||z>=MH) return 255; return CLS[z*MW+x]; };
+
+/* ---------- renderer ---------- */
+const canvas = document.getElementById('c');
+let renderer;
+try { renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance', logarithmicDepthBuffer:true}); }
+catch(e){ setStatus('Deze browser ondersteunt geen WebGL, de 3D-impressie kan niet getoond worden.'); throw e; }
+const isMobile = matchMedia('(pointer:coarse)').matches;
+let HQ = !isMobile;
+renderer.setPixelRatio(Math.min(devicePixelRatio, HQ?2:1.25));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.62;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1, 0.5, 12000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.maxPolarAngle = 1.55; controls.minDistance = 3; controls.maxDistance = 4200;
+
+const SUN_DIR = new THREE.Vector3(-0.62, 0.62, 0.48).normalize();
+const FOG = srgb(0.72,0.78,0.84);
+scene.fog = new THREE.Fog(FOG, 1400, 9000);
+function buildSky(){
+  const skyScene = new THREE.Scene();
+  const sky = new Sky(); sky.scale.setScalar(1000);
+  const u = sky.material.uniforms;
+  u.turbidity.value = 5.5; u.rayleigh.value = 1.4; u.mieCoefficient.value = 0.004; u.mieDirectionalG.value = 0.82;
+  u.sunPosition.value.copy(SUN_DIR); skyScene.add(sky);
+  const clouds = new THREE.Mesh(new THREE.SphereGeometry(400, 64, 32), new THREE.ShaderMaterial({
+    side:THREE.BackSide, transparent:true, depthWrite:false, uniforms:{ sun:{value:SUN_DIR} },
+    vertexShader:`varying vec3 vD; void main(){ vD=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader:`varying vec3 vD; uniform vec3 sun;
+      float h(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+      float n(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+        return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }
+      float fbm(vec2 p){ float v=0., a=.5; for(int k=0;k<6;k++){ v+=a*n(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return v; }
+      void main(){
+        if(vD.y<=0.0) discard;
+        vec2 uv = vD.xz/(vD.y+0.12)*1.6 + vec2(3.0,1.0);
+        float d = fbm(uv);
+        float c = smoothstep(0.52, 0.78, d) * smoothstep(0.0, 0.18, vD.y);
+        if(c<0.01) discard;
+        float lit = 0.55 + 0.45*smoothstep(0.45,0.8,fbm(uv+sun.xz*0.25));
+        vec3 col = mix(vec3(0.62,0.65,0.72), vec3(1.0,0.98,0.94), lit) * 1.05;
+        gl_FragColor = vec4(col, c*0.92);
+      }`}));
+  skyScene.add(clouds);
+  const rt = new THREE.WebGLCubeRenderTarget(1024, {type:THREE.HalfFloatType, generateMipmaps:true, minFilter:THREE.LinearMipmapLinearFilter});
+  new THREE.CubeCamera(1, 2000, rt).update(renderer, skyScene);
+  scene.background = rt.texture;
+  scene.environment = new THREE.PMREMGenerator(renderer).fromCubemap(rt.texture).texture;
+}
+scene.add(new THREE.HemisphereLight(0xcfdcec, 0x5c5a36, 0.35));
+const sun = new THREE.DirectionalLight(0xfff0d6, 3.2);
+sun.castShadow = true; sun.shadow.mapSize.set(4096,4096);
+Object.assign(sun.shadow.camera, {left:-260,right:260,top:260,bottom:-260,near:10,far:1600});
+sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.4;
+scene.add(sun); scene.add(sun.target);
+
+/* ---------- textures ---------- */
+function canvasTex(w,h,fn,{srgb:isS=true, repeat=true}={}){ const c=document.createElement('canvas'); c.width=w;c.height=h; const x=c.getContext('2d'); fn(x,w,h);
+  const t=new THREE.CanvasTexture(c); if(isS) t.colorSpace=THREE.SRGBColorSpace; if(repeat) t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=8; return t; }
+const limeDraw = (x,w,h,bump)=>{ x.fillStyle=bump?'#808080':'#efeadf'; x.fillRect(0,0,w,h);
+  for(let i=0;i<1400;i++){ x.fillStyle=bump?`rgba(${rnd()<.5?'60,60,60':'200,200,200'},${rr(.03,.09)})`:`rgba(${rnd()<.5?'196,186,164':'255,255,250'},${rr(.04,.14)})`; x.beginPath(); x.arc(rnd()*w,rnd()*h,rr(1.5,12),0,7); x.fill(); }
+  const col = bump?'rgba(150,150,150,.9)':'rgba(214,206,186,.45)';
+  x.fillStyle=col; for(const px of [0, w/2]) x.fillRect(px-3,0,6,h);
+  x.fillRect(0,h*(1-.48)-3,w,6);
+  x.strokeStyle=col; x.lineWidth=5; x.beginPath(); x.moveTo(3,h*(1-.48)); x.lineTo(w/2-3,h*(1-.05)); x.stroke(); };
+const limeTex = canvasTex(512,512,(x,w,h)=>limeDraw(x,w,h,false));
+const limeBump = canvasTex(512,512,(x,w,h)=>limeDraw(x,w,h,true),{srgb:false});
+const thatchDraw = (x,w,h,bump)=>{ x.fillStyle=bump?'#707070':'#8a7450'; x.fillRect(0,0,w,h);
+  for(let i=0;i<5200;i++){ const px=rnd()*w, py=rnd()*h, L=rr(10,34);
+    x.strokeStyle = bump ? `rgba(${rnd()<.5?'30,30,30':'230,230,230'},${rr(.2,.5)})` : `rgba(${rnd()<.45?'178,152,104':(rnd()<.5?'98,82,56':'140,128,100')},${rr(.25,.6)})`;
+    x.lineWidth=rr(.6,1.8); x.beginPath(); x.moveTo(px,py); x.lineTo(px+rr(-1.5,1.5),py+L); x.stroke(); }
+  for(let r=0;r<h;r+=h/6){ x.fillStyle=bump?'rgba(0,0,0,.25)':'rgba(60,50,30,.18)'; x.fillRect(0,r,w,3); }
+  if(!bump) for(let i=0;i<55;i++){ x.fillStyle=`rgba(${rnd()<.5?'84,98,56':'70,70,60'},${rr(.08,.22)})`; x.beginPath(); x.ellipse(rnd()*w,rnd()*h,rr(6,26),rr(10,40),0,0,7); x.fill(); } };
+const thatchTex = canvasTex(512,512,(x,w,h)=>thatchDraw(x,w,h,false));
+const thatchBump = canvasTex(512,512,(x,w,h)=>thatchDraw(x,w,h,true),{srgb:false});
+const plankTex = canvasTex(256,256,(x,w,h)=>{ x.fillStyle='#d8d8d8'; x.fillRect(0,0,w,h);
+  for(let i=0;i<w;i+=w/6){ x.fillStyle='rgba(0,0,0,.45)'; x.fillRect(i,0,3,h); for(let k=0;k<30;k++){ x.fillStyle=`rgba(0,0,0,${rr(.03,.1)})`; x.fillRect(i+rr(4,w/6-4),rnd()*h,1,rr(10,60)); } }
+  x.fillStyle='rgba(0,0,0,.35)'; x.fillRect(0,h*.15,w,10); x.fillRect(0,h*.8,w,10);
+  x.strokeStyle='rgba(0,0,0,.35)'; x.lineWidth=10; x.beginPath(); x.moveTo(0,h*.8); x.lineTo(w,h*.18); x.stroke(); });
+const brickDraw = (x,w,h,bump)=>{ x.fillStyle=bump?'#3a3a3a':'#cfc6b8'; x.fillRect(0,0,w,h);
+  const bw=w/8, bh=h/32;
+  for(let r=0;r<32;r++) for(let c=-1;c<9;c++){ const ox=(r%2)*bw/2;
+    if(bump){ const v=(rr(170,230))|0; x.fillStyle=`rgb(${v},${v},${v})`; }
+    else { const k=rnd(); x.fillStyle = k<.08 ? `hsl(${rr(15,25)},${rr(25,35)}%,${rr(22,30)}%)` : `hsl(${rr(6,16)},${rr(45,60)}%,${rr(30,42)}%)`; }
+    x.fillRect(c*bw+ox+1.5, r*bh+1.5, bw-3, bh-3); }
+  if(!bump) for(let i=0;i<60;i++){ x.fillStyle=`rgba(${rnd()<.5?'40,30,20':'90,90,70'},${rr(.05,.14)})`; x.beginPath(); x.ellipse(rnd()*w,rnd()*h,rr(10,60),rr(10,40),0,0,7); x.fill(); } };
+const brickTex = canvasTex(512,512,(x,w,h)=>brickDraw(x,w,h,false));
+const brickBump = canvasTex(512,512,(x,w,h)=>brickDraw(x,w,h,true),{srgb:false});
+const slateTex = canvasTex(256,256,(x,w,h)=>{ x.fillStyle='#3d434a'; x.fillRect(0,0,w,h);
+  const rh=h/16, sw=w/10;
+  for(let r=0;r<16;r++) for(let c=-1;c<11;c++){ const ox=(r%2)*sw/2; const v=rr(-10,10);
+    x.fillStyle=`rgb(${62+v},${68+v},${76+v})`; x.fillRect(c*sw+ox+1, r*rh+1, sw-2, rh-1.5);
+    x.fillStyle='rgba(0,0,0,.35)'; x.fillRect(c*sw+ox+1, r*rh+rh-2.5, sw-2, 1.5); } });
+const stoneTex = canvasTex(128,128,(x,w,h)=>{ x.fillStyle='#e4ddcf'; x.fillRect(0,0,w,h);
+  for(let i=0;i<300;i++){ x.fillStyle=`rgba(${rnd()<.5?'150,140,120':'255,255,255'},${rr(.05,.15)})`; x.beginPath(); x.arc(rnd()*w,rnd()*h,rr(1,6),0,7); x.fill(); } });
+const leafCard = canvasTex(256,256,(x,w,h)=>{ x.clearRect(0,0,w,h);
+  for(let i=0;i<80;i++){ const a=rnd()*6.28, r=rr(10,110), px=w/2+Math.cos(a)*r*.95, py=h/2+Math.sin(a)*r*.95;
+    const v=(rr(150,250))|0; x.fillStyle=`rgb(${v},${v},${v})`; x.save(); x.translate(px,py); x.rotate(rnd()*6.28); x.beginPath(); x.ellipse(0,0,rr(5,9),rr(11,18),0,0,7); x.fill(); x.restore(); }
+},{srgb:false, repeat:false});
+const leafBlob = canvasTex(256,256,(x,w,h)=>{ x.fillStyle='#4a4a4a'; x.fillRect(0,0,w,h);
+  for(let i=0;i<900;i++){ const v=(rr(90,235))|0; x.fillStyle=`rgb(${v},${v},${v})`; x.save(); x.translate(rnd()*w,rnd()*h); x.rotate(rnd()*6.28); x.beginPath(); x.ellipse(0,0,rr(3,6),rr(7,12),0,0,7); x.fill(); x.restore(); }
+},{srgb:false});
+const grassCard = canvasTex(128,128,(x,w,h)=>{ x.clearRect(0,0,w,h);
+  for(let i=0;i<70;i++){ const bx=rr(4,w-4), top=rr(h*.05,h*.6), lean=rr(-14,14); const v=(rr(140,250))|0;
+    x.strokeStyle=`rgb(${v},${v},${v})`; x.lineWidth=rr(1.2,2.6); x.beginPath(); x.moveTo(bx,h); x.quadraticCurveTo(bx+lean*.3,(h+top)/2,bx+lean,top); x.stroke(); }
+},{srgb:false, repeat:false});
+const grainCard = canvasTex(128,256,(x,w,h)=>{ x.clearRect(0,0,w,h);
+  for(let i=0;i<46;i++){ const bx=rr(4,w-4), top=rr(h*.04,h*.22), lean=rr(-8,8); const v=(rr(170,250))|0;
+    x.strokeStyle=`rgb(${v},${v},${v})`; x.lineWidth=rr(1.2,2); x.beginPath(); x.moveTo(bx,h); x.quadraticCurveTo(bx+lean*.3,(h+top)/2,bx+lean,top); x.stroke();
+    x.fillStyle=`rgb(${v},${v-8},${v-30})`; x.beginPath(); x.ellipse(bx+lean,top-8,rr(2.5,3.6),rr(9,14),lean*.03,0,7); x.fill(); }
+},{srgb:false, repeat:false});
+
+const stdMat = o => { const m = new THREE.MeshStandardMaterial(o); m.envMapIntensity = o.envMapIntensity ?? 0.55; return m; };
+const M = {
+  wall: stdMat({map:limeTex, bumpMap:limeBump, bumpScale:1.2, roughness:.95, vertexColors:true}),
+  gable: stdMat({map:limeTex, bumpMap:limeBump, bumpScale:1.2, roughness:.95, vertexColors:true, side:THREE.DoubleSide}),
+  tar: stdMat({color:0x0f0e0c, roughness:.42}),
+  thatch: stdMat({map:thatchTex, bumpMap:thatchBump, bumpScale:4, roughness:1, envMapIntensity:.35}),
+  ridge: stdMat({color:0x3f3a2c, roughness:1, map:leafBlob}),
+  glass: stdMat({color:0x0d1214, roughness:.06, metalness:0, envMapIntensity:1.4}),
+  frame: stdMat({color:0x2c4532, roughness:.7}),
+  muntin: stdMat({color:0xd9d4c6, roughness:.7}),
+  shutter: stdMat({color:0x2d4a33, roughness:.75, map:plankTex}),
+  door: stdMat({color:0x34482f, roughness:.8, map:plankTex}),
+  barnDoor: stdMat({color:0x4a3624, roughness:.9, map:plankTex}),
+  brick: stdMat({map:brickTex, bumpMap:brickBump, bumpScale:1.5, roughness:.9, vertexColors:true}),
+  brickP: stdMat({map:brickTex, bumpMap:brickBump, bumpScale:1.5, roughness:.9}),
+  slate: stdMat({map:slateTex, roughness:.55, envMapIntensity:.8, side:THREE.DoubleSide}),
+  stone: stdMat({map:stoneTex, roughness:.85}),
+  sill: stdMat({color:0x8d8a80, roughness:.9}),
+  lead: stdMat({color:0x4b5157, roughness:.4, metalness:.3}),
+};
+const BOX = new THREE.BoxGeometry(1,1,1);
+function box(mat, sx,sy,sz, x,y,z, parent, cast=true){ const m=new THREE.Mesh(BOX,mat); m.scale.set(sx,sy,sz); m.position.set(x,y,z); m.castShadow=cast; m.receiveShadow=true; parent.add(m); return m; }
+
+/* ---------- farm buildings ---------- */
+function wallGeo(W,H,D,tile=3){
+  const g = new THREE.BoxGeometry(W,H,D,Math.max(1,Math.round(W/3)),3,Math.max(1,Math.round(D/3)));
+  const p=g.attributes.position, n=g.attributes.normal, uv=g.attributes.uv, col=[];
+  for(let i=0;i<p.count;i++){ const x=p.getX(i), y=p.getY(i)+H/2, z=p.getZ(i), nx=n.getX(i), nz=n.getZ(i);
+    const u = Math.abs(nz)>.5 ? x : (Math.abs(nx)>.5 ? z : x); uv.setXY(i, u/tile, y/tile);
+    let k = 1; if(y<0.9) k *= 0.80 + 0.2*(y/0.9); if(y>H-0.7) k *= 0.82 + 0.18*((H-y)/0.7);
+    col.push(k,k*0.99,k*0.97); }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col,3)); return g;
+}
+function gableGeo(D, wallH, ridgeY, tile=3){
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute([0,wallH,-D/2, 0,wallH,D/2, 0,ridgeY,0],3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute([-D/2/tile,wallH/tile, D/2/tile,wallH/tile, 0,ridgeY/tile],2));
+  g.setAttribute('color', new THREE.Float32BufferAttribute([.84,.83,.81, .84,.83,.81, .74,.73,.71],3));
+  g.computeVertexNormals(); return g;
+}
+function roofSlab(len, slope, thick, sgn, sag){
+  const g = new THREE.BoxGeometry(len, thick, slope, Math.max(4,Math.round(len/1.5)), 1, 6);
+  const p=g.attributes.position, uv=g.attributes.uv, ph=rnd()*10;
+  for(let i=0;i<p.count;i++){ const x=p.getX(i), y=p.getY(i), z=p.getZ(i);
+    const r = Math.min(1,Math.max(0, sgn>0 ? (0.5 - z/slope) : (0.5 + z/slope)));
+    const along = Math.sin(Math.PI*(x/len+0.5));
+    let dy = -sag*along*Math.pow(r,1.3) + 0.05*Math.sin(x*1.3+ph)*Math.sin(z*2.1);
+    if(r<0.06 && y<0) dy += 0.08;
+    p.setY(i, y+dy); uv.setXY(i, x/2.6, (sgn>0?-z:z)/2.6);
+  }
+  g.computeVertexNormals(); return g;
+}
+function window4(g, x, y, z, w, h, side, shutters){
+  const s = side;
+  box(M.sill, w+0.18, 0.08, 0.18, x, y-h/2-0.04, z+s*0.07, g, false);
+  box(M.frame, w+0.1, h+0.1, 0.06, x, y, z+s*0.01, g, false);
+  box(M.glass, w-0.06, h-0.06, 0.06, x, y, z+s*0.02, g, false);
+  box(M.muntin, 0.04, h-0.06, 0.05, x, y, z+s*0.05, g, false);
+  box(M.muntin, w-0.06, 0.04, 0.05, x, y+h*0.12, z+s*0.05, g, false);
+  if(shutters){ if(rnd()<.8){ box(M.shutter, w/2, h, 0.05, x-w*0.78, y, z+s*0.04, g, false); box(M.shutter, w/2, h, 0.05, x+w*0.78, y, z+s*0.04, g, false); }
+    else box(M.shutter, w+0.02, h+0.02, 0.05, x, y, z+s*0.06, g, false); }
+}
+function groundY(X,Z,W,D,ang){ let y=1e9; const c=Math.cos(ang), s=Math.sin(ang);
+  for(const [u,v] of [[-W/2,-D/2],[W/2,-D/2],[W/2,D/2],[-W/2,D/2],[0,0]]) y=Math.min(y,hAt(X+u*c-v*s, Z+u*s+v*c)); return y; }
+const buildGroup = new THREE.Group();
+function addFarm(b){
+  let [X,Z,W,D,deg,kind] = b; D=Math.max(D,5.5); W=Math.max(W,5);
+  const ang = deg*Math.PI/180;
+  const g = new THREE.Group();
+  g.position.set(X, groundY(X,Z,W,D,ang), Z); g.rotation.y = -ang;
+  if(kind==='c') return addChapel(g,W,D);
+  const wallH = kind==='b' ? 3.8 : (kind==='s' ? 2.9 : 3.15);
+  const wall = new THREE.Mesh(wallGeo(W, wallH+0.6, D), M.wall); wall.position.y = wallH/2-0.3; g.add(wall);
+  box(M.tar, W+0.05, 0.95, D+0.05, 0, 0.175, 0, g);
+  const o = 0.45, rise = Math.min(D/2*1.2, 6.8), pitch = Math.atan(rise/(D/2));
+  const ridgeY = wallH + rise, eaveY = wallH - o*Math.tan(pitch), zE = D/2+o;
+  const L = Math.hypot(zE, ridgeY-eaveY), t = 0.45, sag = Math.min(0.35, W*0.012);
+  for(const sgn of [1,-1]){
+    const slab = new THREE.Mesh(roofSlab(W+0.8, L+0.2, t, sgn, sag), M.thatch); g.add(slab);
+    slab.rotation.x = sgn*pitch;
+    slab.position.set(0, (eaveY+ridgeY)/2 + Math.cos(pitch)*t/2, sgn*zE/2 + sgn*Math.sin(pitch)*t/2);
+  }
+  const nok = new THREE.Mesh(new THREE.CylinderGeometry(0.38,0.38,W+0.85,8,4), M.ridge); nok.rotation.z=Math.PI/2; nok.position.set(0, ridgeY+0.36, 0); g.add(nok);
+  const gg = gableGeo(D, wallH, ridgeY);
+  for(const sx of [-W/2, W/2]){ const m=new THREE.Mesh(gg,M.gable); m.position.x=sx; g.add(m); }
+  if(kind==='h'){ box(M.brickP, 0.62, 1.7, 0.62, W*0.22, ridgeY+0.15, 0, g); }
+  const fz = D/2+0.02;
+  if(kind==='b'){
+    const n = Math.max(1, Math.round(W/14));
+    for(let i=0;i<n;i++){ const x = -W/2 + W*(i+.5)/n; box(M.barnDoor, 3.2, 3.0, 0.1, x, 1.45, fz, g, false); box(M.frame, 3.4, 0.14, 0.14, x, 3.0, fz+0.02, g, false); }
+    box(M.door, 1.0, 1.9, 0.08, -W/2+2, 0.92, -fz, g, false);
+  } else {
+    const n = Math.max(2, Math.floor(W/3.2)); const doorAt = Math.floor(n/2);
+    for(let i=0;i<n;i++){
+      const x = -W/2 + W*(i+.5)/n;
+      if(i===doorAt || (kind==='s' && i%2===0)){ box(M.door, 1.0, 1.95, 0.08, x, 0.95, fz, g, false); box(M.frame, 1.12, 0.08, 0.1, x, 1.95, fz+0.01, g, false); continue; }
+      window4(g, x, 1.7, fz, 0.72, 0.9, 1, kind==='h');
+    }
+    for(let i=1;i<n;i+=3){ const x=-W/2 + W*(i+.5)/n; window4(g, x, 1.75, -fz, 0.55, 0.6, -1, false); }
+  }
+  buildGroup.add(g);
+}
+function addChapel(g,W,D){
+  const H=4.2; const wall = new THREE.Mesh(wallGeo(W, H+0.6, D), M.wall); wall.position.y=H/2-0.3; g.add(wall);
+  box(M.tar, W+0.05, 0.8, D+0.05, 0, 0.1, 0, g);
+  const rise=D*0.75; g.add(hipRoofMesh(W+0.6, D+0.6, rise, M.slate, H));
+  // klokkentorentje
+  box(M.wall, 1.4, 1.6, 1.4, -W/2+1.4, H+rise*0.6, 0, g);
+  const sp=new THREE.Mesh(new THREE.ConeGeometry(1.1,3.2,4), M.slate); sp.rotation.y=Math.PI/4; sp.position.set(-W/2+1.4, H+rise*0.6+2.4, 0); g.add(sp);
+  box(M.lead, 0.08, 1.0, 0.08, -W/2+1.4, H+rise*0.6+4.3, 0, g); box(M.lead, 0.5, 0.08, 0.08, -W/2+1.4, H+rise*0.6+4.5, 0, g);
+  box(M.door, 1.1, 2.3, 0.08, W/2+0.03, 1.15, 0, g).rotation.y=Math.PI/2;
+  for(const s of [1,-1]) for(const x of [-W/4, W/4]){ const w=box(M.glass, 0.7, 1.6, 0.06, x, 2.4, s*(D/2+0.03), g, false); box(M.stone, 0.9,1.8,0.04,x,2.4,s*(D/2+0.015),g,false); }
+  buildGroup.add(g);
+}
+// hipped roof (base at y=0): length L along x, depth D along z
+function hipRoofGeo(L, D, H){
+  const r = Math.max(0, L/2 - D/2), hx=L/2, hz=D/2;
+  const P = [[-hx,0,-hz],[hx,0,-hz],[hx,0,hz],[-hx,0,hz],[-r,H,0],[r,H,0]];
+  const tri=(a,b,c)=>[...P[a],...P[b],...P[c]];
+  const pos=[...tri(3,2,5),...tri(3,5,4), ...tri(1,0,4),...tri(1,4,5), ...tri(2,1,5), ...tri(0,3,4)];
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  const uv=[]; for(let i=0;i<pos.length;i+=3){ const x=pos[i], y=pos[i+1], z=pos[i+2]; uv.push((x+z*0.3)/2.2, (y+Math.abs(z)*0.0)/1.6 + (Math.abs(z)<hz-0.01 ? 0 : 0)); }
+  // project UV along slope: use distance from eave
+  for(let i=0,k=0;i<pos.length;i+=9){ for(let v=0;v<3;v++,k++){ const x=pos[i+v*3], y=pos[i+v*3+1], z=pos[i+v*3+2]; uv[k*2]=(x+z)/2.2; uv[k*2+1]=y/1.3; } }
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2)); g.computeVertexNormals(); return g;
+}
+function hipRoofMesh(L,D,H,mat,y){ const m=new THREE.Mesh(hipRoofGeo(L,D,H),mat); m.position.y=y; return m; }
+
+/* ---------- castle ---------- */
+function brickWallGeo(W,H,D){ return wallGeo(W,H,D,2); }
+function castleWing(parent, cx, cz, L, D, deg, wallH, roofH, opts={}){
+  const g=new THREE.Group(); g.position.set(cx,0,cz); g.rotation.y=-deg*Math.PI/180; parent.add(g);
+  const base=1.6; // gemetselde voet in de gracht
+  const w=new THREE.Mesh(brickWallGeo(L, wallH+base, D), M.brick); w.position.y=(wallH-base)/2; g.add(w);
+  box(M.stone, L+0.12, 0.25, D+0.12, 0, 0.05, 0, g);        // plint
+  box(M.stone, L+0.3, 0.3, D+0.3, 0, wallH-0.1, 0, g);       // kroonlijst
+  for(const sx of [-1,1]) for(const sz of [-1,1]) for(let y=0.4;y<wallH-0.4;y+=0.7){ const big=((y/0.7)|0)%2;
+    box(M.stone, big?0.7:0.4, 0.3, 0.06, sx*(L/2-(big?0.35:0.2)), y, sz*(D/2+0.02), g, false);
+    box(M.stone, 0.06, 0.3, big?0.4:0.7, sx*(L/2+0.02), y, sz*(D/2-(big?0.2:0.35)), g, false); }
+  const floors = opts.floors ?? 2;
+  const rows = floors===1 ? [wallH*0.45] : [wallH*0.24, wallH*0.66];
+  for(const side of [1,-1]){
+    const n=Math.max(1,Math.floor((L-1.5)/3.2));
+    for(let i=0;i<n;i++){ const x=-L/2+(L)*(i+.5)/n;
+      rows.forEach((yy,ri)=>{ const ww=1.05, hh= ri===0&&floors>1 ? 1.9 : 1.75;
+        if(opts.door && side===opts.door && ri===0 && i===Math.floor(n/2)){
+          box(M.stone, 1.9, 3.0, 0.08, x, 1.45, side*(D/2+0.03), g, false); box(M.door, 1.4, 2.6, 0.1, x, 1.3, side*(D/2+0.05), g, false); return; }
+        box(M.stone, ww+0.3, hh+0.3, 0.06, x, yy, side*(D/2+0.02), g, false);
+        box(M.glass, ww, hh, 0.07, x, yy, side*(D/2+0.035), g, false);
+        box(M.muntin, 0.05, hh, 0.06, x, yy, side*(D/2+0.07), g, false);
+        box(M.muntin, ww, 0.05, 0.06, x, yy+hh*0.15, side*(D/2+0.07), g, false);
+        box(M.stone, ww+0.4, 0.12, 0.2, x, yy-hh/2-0.15, side*(D/2+0.08), g, false);
+      }); }
+  }
+  for(const sx of [-1,1]){ const n=Math.max(1,Math.floor((D-1.5)/3.2));
+    for(let i=0;i<n;i++){ const z=-D/2+D*(i+.5)/n; rows.forEach(yy=>{ box(M.stone,0.06,2.05,1.35,sx*(L/2+0.02),yy,z,g,false); box(M.glass,0.07,1.75,1.05,sx*(L/2+0.035),yy,z,g,false); }); } }
+  if(roofH>0){ g.add(hipRoofMesh(L+0.8, D+0.8, roofH, M.slate, wallH+0.05));
+    if(opts.dormers){ const n=Math.max(1,Math.floor(L/5)); for(let i=0;i<n;i++){ const x=-L/2+L*(i+.5)/n; for(const s of [1,-1]){
+      const dz=s*(D/2-0.6), dy=wallH+roofH*0.32; box(M.stone,1.1,1.3,1.0,x,dy,dz,g); box(M.glass,0.7,0.9,0.05,x,dy,dz+s*0.51,g,false);
+      const cap=new THREE.Mesh(new THREE.ConeGeometry(0.95,0.8,4),M.slate); cap.rotation.y=Math.PI/4; cap.position.set(x,dy+1.05,dz); g.add(cap); } } }
+    if(opts.chimneys) for(const x of [-L/4, L/4]) box(M.brickP, 0.9, 2.4, 0.9, x, wallH+roofH*0.75, 0, g);
+  }
+  return g;
+}
+function buildCastle(){
+  const P = (px,py)=>[px/2-MW/2, py/2-MH/2];
+  const grp=new THREE.Group();
+  const [ox,oz]=P(2000,5380); const y0=hAt(ox,oz)+0.2; grp.position.set(0,y0,0);
+  // vleugels volgens het kadasterplan
+  let [x,z]=P(1960,5395); castleWing(grp,x,z,30,11,105,9.5,6.5,{dormers:true,chimneys:true});
+  [x,z]=P(1993,5440); castleWing(grp,x,z,25,10,15,8.5,5.8,{chimneys:true});
+  [x,z]=P(2045,5385); castleWing(grp,x,z,27,8,100,6.2,4.6,{floors:1,door:-1});
+  [x,z]=P(1990,5333); const gate=castleWing(grp,x,z,11,9,-20,7.0,5.0,{floors:1});
+  // poorttoren met spits
+  [x,z]=P(1968,5352); const tw=new THREE.Group(); tw.position.set(x,0,z); tw.rotation.y=0.25; grp.add(tw);
+  const tH=17, tW=7.2;
+  const tm=new THREE.Mesh(brickWallGeo(tW,tH+1.6,tW),M.brick); tm.position.y=(tH-1.6)/2; tw.add(tm);
+  for(const sx of [-1,1]) for(const sz of [-1,1]) for(let yy=0.4;yy<tH-0.3;yy+=0.7){ const big=((yy/0.7)|0)%2;
+    box(M.stone, big?0.7:0.4, 0.3, 0.06, sx*(tW/2-(big?0.35:0.2)), yy, sz*(tW/2+0.02), tw, false);
+    box(M.stone, 0.06, 0.3, big?0.4:0.7, sx*(tW/2+0.02), yy, sz*(tW/2-(big?0.2:0.35)), tw, false); }
+  for(const yy of [4.2, 8.3, 12.4]) box(M.stone, tW+0.15, 0.22, tW+0.15, 0, yy, 0, tw, false);
+  for(const s of [1,-1]) for(const yy of [6.2,10.3,14.4]){ box(M.stone,1.1,1.6,0.06,0,yy,s*(tW/2+0.02),tw,false); box(M.glass,0.75,1.25,0.07,0,yy,s*(tW/2+0.035),tw,false);
+    box(M.stone,0.06,1.6,1.1,s*(tW/2+0.02),yy,0,tw,false); box(M.glass,0.07,1.25,0.75,s*(tW/2+0.035),yy,0,tw,false); }
+  box(M.stone, tW+0.5, 0.35, tW+0.5, 0, tH, 0, tw);
+  const spire=new THREE.Mesh(new THREE.ConeGeometry(tW*0.78, 11, 4, 1), M.slate); spire.rotation.y=Math.PI/4; spire.position.y=tH+5.5; tw.add(spire);
+  box(M.lead, 0.12, 2.2, 0.12, 0, tH+12, 0, tw); const ball=new THREE.Mesh(new THREE.SphereGeometry(0.28,12,8),M.lead); ball.position.y=tH+11.5; tw.add(ball);
+  // poortboog in de toren (naar de brug)
+  box(M.stone, 2.6, 3.6, 0.1, 0, 1.6, -tW/2-0.02, tw, false); box(M.door, 2.0, 3.0, 0.12, 0, 1.4, -tW/2-0.04, tw, false);
+  // binnenplaatsmuur
+  [x,z]=P(2017,5336); box(M.brickP, 30, 2.6, 0.6, x, 1.0, z, grp).rotation.y=-0.52;
+  // brug over de gracht (naar het noorden)
+  const [bx0,bz0]=P(1984,5318), [bx1,bz1]=P(1976,5280);
+  const br=new THREE.Group(); const bl=Math.hypot(bx1-bx0,bz1-bz0); br.position.set((bx0+bx1)/2,0,(bz0+bz1)/2); br.rotation.y=-Math.atan2(bz1-bz0,bx1-bx0); grp.add(br);
+  box(M.brickP, bl, 0.7, 4.0, 0, 0.35, 0, br);
+  for(const s of [1,-1]){ box(M.brickP, bl, 0.9, 0.35, 0, 1.1, s*1.85, br); box(M.stone, bl, 0.12, 0.45, 0, 1.6, s*1.85, br); }
+  for(const xx of [-bl/4, bl/4]){ box(M.brickP, 1.0, 2.6, 4.0, xx, -1.0, 0, br);
+    const arch=new THREE.Mesh(new THREE.TorusGeometry(bl/4-0.5, 0.45, 6, 12, Math.PI), M.brickP); arch.position.set(xx+(xx<0?bl/4:-bl/4)*0, 0, 0); }
+  // hekpijlers aan het begin van de brug
+  for(const s of [1,-1]){ box(M.brickP,0.9,2.6,0.9,bl/2,1.3,s*2.2,br); const c=new THREE.Mesh(new THREE.SphereGeometry(0.42,12,8),M.stone); c.position.set(bl/2,2.9,s*2.2); br.add(c); }
+  // grachtmuur rond het eiland
+  const ring = WAT.lines.moat.p; let ccx=0, ccz=0; ring.forEach(p=>{ccx+=p[0]; ccz+=p[1];}); ccx/=ring.length; ccz/=ring.length;
+  for(let i=0;i<ring.length;i++){ const a=ring[i], b=ring[(i+1)%ring.length]; const dx=b[0]-a[0], dz=b[1]-a[1], L=Math.hypot(dx,dz);
+    let nx=-dz/L, nz=dx/L; const mx=(a[0]+b[0])/2, mz=(a[1]+b[1])/2; if((mx+nx-ccx)**2+(mz+nz-ccz)**2 > (mx-ccx)**2+(mz-ccz)**2){ nx=-nx; nz=-nz; }
+    const off=3.6; const m=box(M.brickP, L+0.7, 1.6, 0.45, mx+nx*off, -0.95, mz+nz*off, grp); m.rotation.y=-Math.atan2(dz,dx); }
+  scene.add(grp);
+  return grp;
+}
+
+/* ---------- merge static meshes per material ---------- */
+function mergeStatic(root){
+  root.updateMatrixWorld(true);
+  const buckets=new Map();
+  root.traverse(o=>{ if(!o.isMesh) return; const g=o.geometry.clone().applyMatrix4(o.matrixWorld);
+    const ng = g.index ? g.toNonIndexed() : g; const key=o.material.uuid+'|'+Object.keys(ng.attributes).sort().join(',');
+    if(!buckets.has(key)) buckets.set(key,{mat:o.material, geos:[], cast:o.castShadow});
+    const b=buckets.get(key); b.geos.push(ng); b.cast = b.cast || o.castShadow; });
+  const out=[];
+  for(const b of buckets.values()){ const m=new THREE.Mesh(mergeGeometries(b.geos), b.mat); m.castShadow=true; m.receiveShadow=true; out.push(m); scene.add(m); b.geos.forEach(g=>g.dispose()); }
+  root.removeFromParent();
+  return out;
+}
+
+/* ---------- trees ---------- */
+function addColor(geo, fn){ const p=geo.attributes.position, c=[]; for(let i=0;i<p.count;i++){ const v=fn(p.getX(i),p.getY(i),p.getZ(i)); c.push(v.r,v.g,v.b); } geo.setAttribute('color', new THREE.Float32BufferAttribute(c,3)); return geo; }
+function trunkPiece(r0,r1,len, from, dir, seg=7){ const g=new THREE.CylinderGeometry(r1,r0,len,seg,2).toNonIndexed(); g.translate(0,len/2,0);
+  g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(UP, dir.clone().normalize())); g.translate(from.x,from.y,from.z); return g; }
+function makeTree(sp, lo=false){
+  const solid=[], cards=[]; const bark = lin(sp.bark), leafA = lin(sp.leaf[0]), leafB = lin(sp.leaf[1]);
+  const C = new THREE.Vector3(0, sp.cy, 0), R = sp.r;
+  const ao = (x,y,z) => { const t=Math.min(1,Math.max(0,(y-(C.y-R.y))/(2*R.y))); const out=Math.min(1,Math.hypot((x-C.x)/R.x,(y-C.y)/R.y,(z-C.z)/R.z)); return (0.38 + 0.62*t) * (0.55 + 0.45*out); };
+  if(lo){
+    if(sp.trunkH) solid.push(addColor(trunkPiece(sp.tr, sp.tr*0.7, sp.cy, new THREE.Vector3(), UP, 5), ()=>bark));
+    const g=new THREE.IcosahedronGeometry(1,1); g.scale(R.x*1.05,R.y*1.05,R.z*1.05); g.translate(0,sp.cy,0);
+    const p=g.attributes.position; for(let k=0;k<p.count;k++){ const ph=hash2(k,7)*0.18; p.setXYZ(k,p.getX(k)*(1+ph),p.getY(k),p.getZ(k)*(1+ph)); }
+    g.computeVertexNormals(); const lc=leafA.clone().lerp(leafB,.5); addColor(g,(x,y,z)=>{ const a=ao(x,y,z)*0.85; return new THREE.Color(lc.r*a,lc.g*a,lc.b*a); });
+    solid.push(g); return { solid: mergeGeometries(solid) };
+  }
+  if(sp.trunkH){
+    solid.push(addColor(trunkPiece(sp.tr, sp.tr*0.7, sp.trunkH, new THREE.Vector3(), new THREE.Vector3(rr(-.05,.05),1,rr(-.05,.05))), ()=>bark));
+    for(let i=0;i<sp.branches;i++){ const a=i/sp.branches*6.28+rr(-.4,.4); const d=new THREE.Vector3(Math.cos(a)*sp.spread, 1, Math.sin(a)*sp.spread);
+      solid.push(addColor(trunkPiece(sp.tr*0.55, sp.tr*0.25, sp.cy-sp.trunkH+R.y*0.3, new THREE.Vector3(0,sp.trunkH-0.2,0), d), ()=>bark)); }
+    if(sp.knot){ const k=new THREE.IcosahedronGeometry(sp.tr*1.5,1); k.scale(1,.7,1); k.translate(0,sp.trunkH,0); solid.push(addColor(k,()=>bark)); }
+  }
+  for(let i=0;i<sp.blobs;i++){
+    const dir = new THREE.Vector3(rr(-1,1),rr(-1,1),rr(-1,1)); if(dir.length()>1) dir.normalize();
+    const c = new THREE.Vector3(C.x+dir.x*R.x*0.62, C.y+dir.y*R.y*0.62, C.z+dir.z*R.z*0.62);
+    const g = new THREE.IcosahedronGeometry(rr(sp.blob[0], sp.blob[1]), 1);
+    const p=g.attributes.position, n=g.attributes.normal, col=[], ph=rnd()*9;
+    for(let k=0;k<p.count;k++){ const v=new THREE.Vector3(p.getX(k),p.getY(k),p.getZ(k)); const nn=v.clone().normalize();
+      v.multiplyScalar(1 + 0.22*Math.sin(nn.x*5+ph)*Math.sin(nn.y*4+ph*1.3)*Math.sin(nn.z*5+ph*.7)).add(c); p.setXYZ(k,v.x,v.y,v.z);
+      const cn = v.clone().sub(C); cn.set(cn.x/R.x,cn.y/R.y,cn.z/R.z).normalize(); const m = nn.multiplyScalar(.45).add(cn.multiplyScalar(.55)).normalize(); n.setXYZ(k,m.x,m.y,m.z);
+      const a=ao(v.x,v.y,v.z)*0.78, lc = leafA.clone().lerp(leafB, (Math.sin(ph*3+i)*.5+.5)); col.push(lc.r*a,lc.g*a,lc.b*a); }
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col,3)); solid.push(g);
+  }
+  for(let i=0;i<sp.cards;i++){
+    const dir = new THREE.Vector3(rr(-1,1),rr(-.8,1),rr(-1,1)).normalize(); const rad=rr(.82,1.08);
+    const c = new THREE.Vector3(C.x+dir.x*R.x*rad, C.y+dir.y*R.y*rad, C.z+dir.z*R.z*rad);
+    const s = rr(sp.card*0.75, sp.card*1.25);
+    const g = new THREE.PlaneGeometry(s,s).toNonIndexed();
+    g.applyQuaternion(new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd()*6.28,rnd()*6.28,rnd()*6.28))); g.translate(c.x,c.y,c.z);
+    const n=g.attributes.normal, cn = c.clone().sub(C).normalize(); for(let k=0;k<n.count;k++) n.setXYZ(k,cn.x,cn.y,cn.z);
+    const a = ao(c.x,c.y,c.z)*1.08, lc = leafA.clone().lerp(leafB, rnd());
+    addColor(g, ()=>new THREE.Color(lc.r*a,lc.g*a,lc.b*a)); cards.push(g);
+  }
+  return { solid: mergeGeometries(solid), cards: cards.length? mergeGeometries(cards):null };
+}
+const SPECIES = {
+  fruit: { trunkH:1.9, tr:.15, branches:4, spread:.9, cy:3.9, r:{x:2.7,y:2.0,z:2.7}, blobs:12, blob:[.6,.95], cards:150, card:1.0, leaf:[0x47702c,0x5d8434], bark:0x4a3e33 },
+  linde: { trunkH:3.6, tr:.5, branches:5, spread:.7, cy:8.4, r:{x:5.6,y:5.0,z:5.6}, blobs:22, blob:[1.2,1.8], cards:320, card:1.8, leaf:[0x34561f,0x4a6d2a], bark:0x4b4339 },
+  eik:   { trunkH:3.2, tr:.6, branches:6, spread:.9, cy:9.0, r:{x:6.5,y:5.2,z:6.5}, blobs:24, blob:[1.3,2.0], cards:340, card:1.9, leaf:[0x2f4d1c,0x405f25], bark:0x463d33 },
+  wilg:  { trunkH:2.1, tr:.36, branches:7, spread:.6, cy:4.3, r:{x:2.3,y:2.1,z:2.3}, blobs:10, blob:[.55,.85], cards:150, card:1.0, leaf:[0x7c8f62,0x95a77a], bark:0x5b5245, knot:true },
+  pop:   { trunkH:3.0, tr:.32, branches:3, spread:.15, cy:11, r:{x:1.9,y:8.2,z:1.9}, blobs:16, blob:[.6,1.0], cards:190, card:1.1, leaf:[0x4c6e30,0x5f8239], bark:0x8a857a },
+  haag:  { trunkH:0, cy:.95, r:{x:1.6,y:1.0,z:1.1}, blobs:6, blob:[.45,.62], cards:55, card:.75, leaf:[0x3d5f25,0x557a31], bark:0x40352b },
+};
+const foliageMat = stdMat({vertexColors:true, map:leafBlob, roughness:.85, envMapIntensity:.45});
+const cardMat = stdMat({vertexColors:true, map:leafCard, alphaTest:.45, side:THREE.DoubleSide, roughness:.8, envMapIntensity:.45});
+const cardDepth = new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking, map:leafCard, alphaTest:.45});
+const TREE = {}; // per soort: data + meshes
+function setupTrees(){
+  for(const k in SPECIES){
+    const list = (TREES[k]||[]).map(t=>({X:t[0], Z:t[1], f: k==='linde'&&t[2] ? rr(.7,.8) : rr(.8,1.15), r:rr(0,6.28), v:(rnd()*2)|0, tint:rr(.9,1.08)}));
+    list.forEach(t=>t.Y=hAt(t.X,t.Z)-0.05);
+    for(let i=list.length-1;i>=0;i--){ const t=list[i]; if(['weg','poort'].some(v=>Math.hypot(t.X-VIEWS[v].p[0], t.Z-VIEWS[v].p[2])<9)) list.splice(i,1); }
+    const V=[makeTree(SPECIES[k]), makeTree(SPECIES[k])], LO=makeTree(SPECIES[k],true);
+    const mk=(geo,mat,n,depth)=>{ const im=new THREE.InstancedMesh(geo,mat,Math.max(1,n)); im.count=0; im.castShadow=true; im.receiveShadow=true; im.frustumCulled=false; if(depth) im.customDepthMaterial=depth; im.setColorAt(0,new THREE.Color()); scene.add(im); return im; };
+    const nv=[list.filter(t=>t.v===0).length, list.filter(t=>t.v===1).length];
+    TREE[k]={ list, hi:V.map((vv,i)=>({solid:mk(vv.solid,foliageMat,nv[i]), cards:mk(vv.cards,cardMat,nv[i],cardDepth)})), lo:mk(LO.solid,foliageMat,list.length) };
+  }
+}
+const _m4=new THREE.Matrix4(), _q=new THREE.Quaternion(), _s=new THREE.Vector3(), _p=new THREE.Vector3(), _c=new THREE.Color();
+let lastTreeAt=new THREE.Vector3(1e9,0,1e9), lastTreeHQ=null;
+function updateTrees(force){
+  const cp=camera.position; const R = HQ ? 260 : 150;
+  if(!force && lastTreeHQ===HQ && Math.hypot(cp.x-lastTreeAt.x, cp.z-lastTreeAt.z)<20 && Math.abs(cp.y-lastTreeAt.y)<30) return;
+  lastTreeAt.copy(cp); lastTreeHQ=HQ;
+  const near2 = (cp.y<600 ? R*R : 0);
+  for(const k in TREE){ const T=TREE[k]; const cnt=[0,0]; let lo=0;
+    for(const t of T.list){ _p.set(t.X,t.Y,t.Z); _q.setFromAxisAngle(UP,t.r); _s.setScalar(t.f); _m4.compose(_p,_q,_s); _c.setRGB(t.tint*1.02,t.tint,t.tint*.97);
+      const d2=(t.X-cp.x)**2+(t.Z-cp.z)**2;
+      if(d2<near2){ const h=T.hi[t.v], i=cnt[t.v]++; h.solid.setMatrixAt(i,_m4); h.solid.setColorAt(i,_c); h.cards.setMatrixAt(i,_m4); h.cards.setColorAt(i,_c); }
+      else { T.lo.setMatrixAt(lo,_m4); T.lo.setColorAt(lo,_c); lo++; } }
+    T.hi.forEach((h,i)=>{ for(const im of [h.solid,h.cards]){ im.count=cnt[i]; im.instanceMatrix.needsUpdate=true; if(im.instanceColor) im.instanceColor.needsUpdate=true; } });
+    T.lo.count=lo; T.lo.instanceMatrix.needsUpdate=true; if(T.lo.instanceColor) T.lo.instanceColor.needsUpdate=true;
+  }
+}
+function staticInst(geo, mat, arr, place, depth){
+  if(!arr.length) return; const im=new THREE.InstancedMesh(geo,mat,arr.length); im.castShadow=true; im.receiveShadow=true; im.frustumCulled=false; if(depth) im.customDepthMaterial=depth;
+  arr.forEach((t,i)=>{ _c.set(1,1,1); place(t,_p,_q,_s,_c); _m4.compose(_p,_q,_s); im.setMatrixAt(i,_m4); im.setColorAt(i,_c); }); scene.add(im);
+}
+function setupProps(){
+  const mijtGeo = new THREE.LatheGeometry([[0,0],[1.45,0],[1.55,1.6],[1.5,2.3],[1.2,3.3],[0.7,4.1],[0.15,4.55],[0,4.6]].map(([x,y])=>new THREE.Vector2(x,y)), 18);
+  staticInst(mijtGeo, M.thatch, TREES.mijt, (t,p,q,s,c)=>{ p.set(t[0],hAt(t[0],t[1])-0.05,t[1]); q.setFromAxisAngle(UP,rnd()*6); s.setScalar(rr(.9,1.1)); c.set(0xd8c8a0); });
+  const schoofGeo = new THREE.LatheGeometry([[0,0],[0.42,0],[0.36,0.45],[0.42,0.95],[0.16,1.35],[0.02,1.5],[0,1.5]].map(([x,y])=>new THREE.Vector2(x,y)), 7);
+  staticInst(schoofGeo, M.thatch, TREES.schoof, (t,p,q,s,c)=>{ p.set(t[0],hAt(t[0],t[1])-0.05,t[1]); q.setFromAxisAngle(UP,rnd()*6); const f=rr(.85,1.1); s.set(f,f*rr(.9,1.1),f); c.set(0xffe9b8); });
+  const koe = mergeGeometries([
+    addColor(new THREE.CapsuleGeometry(0.52,1.25,4,10).rotateZ(Math.PI/2).scale(1,1,.85).translate(0,1.2,0).toNonIndexed(), ()=>lin(0xffffff)),
+    addColor(new THREE.BoxGeometry(0.55,0.42,0.36).translate(1.15,0.92,0).toNonIndexed(), ()=>lin(0xf2f2f2)),
+    addColor(new THREE.BoxGeometry(0.2,0.2,0.3).translate(1.42,0.78,0).toNonIndexed(), ()=>lin(0x9a8a80)),
+    ...[[.55,.24],[.55,-.24],[-.6,.24],[-.6,-.24]].map(([x,z])=>addColor(new THREE.CylinderGeometry(.08,.07,.9,6).translate(x,.45,z).toNonIndexed(), ()=>lin(0x9a948c))),
+  ]);
+  const cows=[0x1d1a18,0x6b3a22,0xe8e2d6,0x8a5a3a];
+  staticInst(koe, stdMat({vertexColors:true, roughness:.9}), TREES.koe, (t,p,q,s,c)=>{ p.set(t[0],hAt(t[0],t[1]),t[1]); q.setFromAxisAngle(UP,rnd()*6.28); s.setScalar(rr(.85,1)); c.set(cows[t[2]||0]); });
+  const schaap = mergeGeometries([
+    addColor(new THREE.IcosahedronGeometry(0.5,2).scale(1.35,.95,.9).translate(0,.72,0), ()=>lin(0xe8e2d2)),
+    addColor(new THREE.BoxGeometry(.3,.26,.2).translate(.68,.78,0).toNonIndexed(), ()=>lin(0x2a2622)),
+    ...[[.3,.15],[.3,-.15],[-.3,.15],[-.3,-.15]].map(([x,z])=>addColor(new THREE.CylinderGeometry(.04,.04,.45,5).translate(x,.22,z).toNonIndexed(), ()=>lin(0x2a2622))),
+  ]);
+  staticInst(schaap, stdMat({vertexColors:true, roughness:1}), TREES.schaap, (t,p,q,s,c)=>{ p.set(t[0],hAt(t[0],t[1]),t[1]); q.setFromAxisAngle(UP,rnd()*6.28); s.setScalar(rr(.8,.95)); });
+}
+
+/* ---------- water ---------- */
+const waterMat = stdMat({color:0x22302b, roughness:0.12, metalness:0.0, envMapIntensity:0.6, polygonOffset:true, polygonOffsetFactor:-2, polygonOffsetUnits:-4});
+function ribbon(pts, w, closed){
+  const P=pts.slice(); if(closed) P.push(P[0]);
+  // verfijn: punten om de 3 m
+  const Q=[]; for(let i=0;i<P.length-1;i++){ const [x0,z0]=P[i],[x1,z1]=P[i+1]; const L=Math.hypot(x1-x0,z1-z0), n=Math.max(1,Math.ceil(L/3)); for(let k=0;k<n;k++) Q.push([x0+(x1-x0)*k/n, z0+(z1-z0)*k/n]); }
+  Q.push(P[P.length-1]);
+  const pos=[], idx=[];
+  for(let i=0;i<Q.length;i++){ const a=Q[Math.max(0,i-1)], b=Q[Math.min(Q.length-1,i+1)]; let dx=b[0]-a[0], dz=b[1]-a[1]; const L=Math.hypot(dx,dz)||1; dx/=L; dz/=L;
+    for(const s of [-1,1]){ const x=Q[i][0]-dz*s*w/2, z=Q[i][1]+dx*s*w/2; pos.push(x, hAt(x,z)+0.12, z); }
+    if(i>0){ const k=i*2; idx.push(k-2,k-1,k, k-1,k+1,k); } }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setIndex(idx); g.computeVertexNormals();
+  const n=g.attributes.normal; for(let i=0;i<n.count;i++) n.setXYZ(i,0,1,0);
+  return g;
+}
+function buildWater(){
+  const geos=[];
+  for(const k in WAT.lines){ const l=WAT.lines[k]; geos.push(ribbon(l.p, Math.max(2.2,l.w*0.9), l.closed)); }
+  for(const [x,z,a,b] of WAT.ponds){ const g=new THREE.CircleGeometry(1,24); g.rotateX(-Math.PI/2); const p=g.attributes.position;
+    for(let i=0;i<p.count;i++){ const X=x+p.getX(i)*a, Z=z+p.getZ(i)*b; p.setXYZ(i,X,hAt(X,Z)+0.12,Z); } g.computeVertexNormals(); g.deleteAttribute('uv'); geos.push(g.index?g.toNonIndexed():g); }
+  const m=new THREE.Mesh(mergeGeometries(geos.map(g=>g.index?g.toNonIndexed():g)), waterMat); m.receiveShadow=true; scene.add(m);
+}
+
+/* ---------- terrain ---------- */
+async function buildTerrain(){
+  const gimg = await loadImg('ground.jpg');
+  const gtex = new THREE.Texture(gimg); gtex.needsUpdate=true; gtex.colorSpace=THREE.SRGBColorSpace; gtex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+  gtex.minFilter=THREE.LinearMipmapLinearFilter; gtex.generateMipmaps=true;
+  const detail = canvasTex(256,256,(x,w,h)=>{ const im=x.createImageData(w,h); for(let i=0;i<w*h;i++){ const xx=i%w, yy=(i/w)|0;
+      const v = 128 + (hash2(xx>>2,yy>>2)-.5)*70 + (hash2(xx,yy)-.5)*60; im.data[i*4]=im.data[i*4+1]=im.data[i*4+2]=v; im.data[i*4+3]=255; } x.putImageData(im,0,0); },{srgb:false});
+  detail.repeat.set(MW/4, MH/4);
+  const geo = new THREE.PlaneGeometry(MW, MH, HN-1, HM-1);
+  const pos = geo.attributes.position;
+  for(let i=0;i<pos.count;i++){ pos.setZ(i, hAt(pos.getX(i), -pos.getY(i))); }
+  geo.computeVertexNormals();
+  const gmat = stdMat({map:gtex, bumpMap:detail, bumpScale:2.0, roughness:1, envMapIntensity:.45});
+  gmat.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <map_fragment>',
+    `#include <map_fragment>
+     float dtl = texture2D(bumpMap, vBumpMapUv).r;
+     diffuseColor.rgb *= mix(1.0, 0.75 + dtl*0.5, 0.8);`); };
+  const ground = new THREE.Mesh(geo, gmat); ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+  // omgeving buiten het kaartgebied
+  const tex = canvasTex(1024,1024,(x,w,h)=>{ x.fillStyle='#7c8d4e'; x.fillRect(0,0,w,h);
+    const cols=['#b5a068','#a0975a','#6a8742','#87974f','#bfa872','#7a784c','#5d7b3c'];
+    for(let i=0;i<260;i++){ x.save(); x.translate(rnd()*w,rnd()*h); x.rotate(rr(-.4,.4)); x.fillStyle=cols[(rnd()*cols.length)|0]; x.fillRect(0,0,rr(30,120),rr(25,90)); x.restore(); } });
+  tex.repeat.set(1/700,1/700);
+  const S=9000, hx=MW/2-0.5, hz=MH/2-0.5;
+  const shp = new THREE.Shape([new THREE.Vector2(-S,-S),new THREE.Vector2(S,-S),new THREE.Vector2(S,S),new THREE.Vector2(-S,S)]);
+  shp.holes.push(new THREE.Path([new THREE.Vector2(-hx,-hz),new THREE.Vector2(-hx,hz),new THREE.Vector2(hx,hz),new THREE.Vector2(hx,-hz)]));
+  const outer = new THREE.Mesh(new THREE.ShapeGeometry(shp), stdMat({map:tex, roughness:1, envMapIntensity:.4}));
+  outer.rotation.x=-Math.PI/2; outer.position.y=-0.02; outer.receiveShadow=true; scene.add(outer);
+  // boomgroepen aan de horizon
+  const far=[];
+  for(let i=0;i<220;i++){ let X,Z; do{ X=rr(-4200,4200); Z=rr(-4600,4600); }while(Math.abs(X)<MW/2+40 && Math.abs(Z)<MH/2+40);
+    const n=(rr(4,18))|0, dir=rr(0,6.28), row=rnd()<.4;
+    for(let j=0;j<n;j++){ const t = row ? [X+Math.cos(dir)*j*10, Z+Math.sin(dir)*j*10] : [X+rr(-30,30), Z+rr(-30,30)];
+      if(Math.abs(t[0])<MW/2+10 && Math.abs(t[1])<MH/2+10) continue; far.push(t); } }
+  const LO=makeTree(SPECIES.eik,true);
+  staticInst(LO.solid, foliageMat, far, (t,p,q,s,c)=>{ p.set(t[0],0,t[1]); q.setFromAxisAngle(UP,rnd()*6); s.setScalar(rr(.7,1.2)); c.setRGB(rr(.9,1.05),1,1); });
+}
+
+/* ---------- gras en graan van dichtbij ---------- */
+const COVER_MAX = 26000, COVER_R = 60, COVER_SP = 0.75;
+let grassIM, grainIM, coverCenter = new THREE.Vector3(1e9,0,1e9), coverHQ=null;
+const CV = [ {t:'g',h:.28,w:.9,c:[.86,.76,.48]}, {t:'k',h:1.15,w:1.3,c:[.98,.83,.48]}, {t:'k',h:1.0,w:1.25,c:[.78,.82,.5]}, {t:'k',h:.85,w:1.25,c:[.96,.89,.58]},
+  {t:'g',h:.75,w:1.0,c:[.48,.62,.46]}, {t:'g',h:.28,w:1.0,c:[.42,.62,.27],p:.9}, {t:'g',h:.5,w:1.0,c:[.3,.46,.2],p:.8}, {t:'g',h:.18,w:.8,c:[.5,.55,.3],p:.18},
+  {t:'g',h:.32,w:1.0,c:[.48,.68,.3]}, {t:'g',h:.38,w:1.0,c:[.46,.66,.28]}, {t:'g',h:.32,w:.9,c:[.38,.58,.25],p:.55}, {t:'g',h:.55,w:1.1,c:[.55,.68,.32]},
+  {t:'g',h:.12,w:.8,c:[.44,.66,.28]}, {t:'k',h:1.1,w:1.2,c:[.62,.66,.3]} ];
+const CVB = {t:'g',h:.42,w:1.0,c:[.52,.66,.32]};
+function initCover(){
+  const cross = mergeGeometries([new THREE.PlaneGeometry(1,1).translate(0,.5,0), new THREE.PlaneGeometry(1,1).rotateY(Math.PI/2).translate(0,.5,0)]);
+  const nrm = cross.attributes.normal; for(let i=0;i<nrm.count;i++) nrm.setXYZ(i,0,1,0);
+  const mk = tex => { const m = stdMat({map:tex, alphaTest:.4, side:THREE.DoubleSide, roughness:.9, envMapIntensity:.4});
+    const im = new THREE.InstancedMesh(cross, m, COVER_MAX); im.receiveShadow=true; im.count=0; im.frustumCulled=false; scene.add(im); im.setColorAt(0,new THREE.Color()); return im; };
+  grassIM = mk(grassCard); grainIM = mk(grainCard);
+}
+function updateCover(force){
+  if(!grassIM) return;
+  const dist = camera.position.distanceTo(controls.target);
+  const show = HQ && dist < 170;
+  grassIM.visible = grainIM.visible = show; if(!show) return;
+  const c = controls.target; if(!force && coverHQ===HQ && Math.hypot(c.x-coverCenter.x, c.z-coverCenter.z) < 12) return;
+  coverCenter.copy(c); coverHQ=HQ;
+  let ng=0, nk=0; const sp=COVER_SP;
+  const i0=Math.floor((c.x-COVER_R)/sp), i1=Math.ceil((c.x+COVER_R)/sp), j0=Math.floor((c.z-COVER_R)/sp), j1=Math.ceil((c.z+COVER_R)/sp);
+  for(let i=i0;i<=i1;i++) for(let j=j0;j<=j1;j++){
+    const X=i*sp+hash2(i,j*7)*sp, Z=j*sp+hash2(i*3,j)*sp, d=Math.hypot(X-c.x,Z-c.z);
+    if(d>COVER_R) continue; const keep = d<28 ? 1 : 1-(d-28)/(COVER_R-28); if(hash2(i*13,j*17)>keep) continue;
+    const k=clsAt(X,Z); let spec;
+    if(k<=13) spec=CV[k]; else if(k===23) spec=CVB; else continue;
+    if(spec.p && hash2(i*5,j*11)>spec.p) continue;
+    const grain = spec.t==='k'; if(grain? nk>=COVER_MAX : ng>=COVER_MAX) continue;
+    const h = hash2(i*29,j*31);
+    _p.set(X, hAt(X,Z)-0.03, Z); _q.setFromAxisAngle(UP, h*6.28);
+    _s.set(spec.w*(.8+h*.4), spec.h*(.8+hash2(j,i)*.4), spec.w*(.8+h*.4));
+    _m4.compose(_p,_q,_s); _c.setRGB(spec.c[0]*(.88+h*.2), spec.c[1]*(.88+h*.2), spec.c[2]*(.9+h*.15), THREE.SRGBColorSpace);
+    const im = grain?grainIM:grassIM, n = grain? nk++ : ng++;
+    im.setMatrixAt(n,_m4); im.setColorAt(n,_c);
+  }
+  grassIM.count=ng; grainIM.count=nk;
+  for(const im of [grassIM,grainIM]){ im.instanceMatrix.needsUpdate=true; if(im.instanceColor) im.instanceColor.needsUpdate=true; }
+}
+
+/* ---------- opbouw ---------- */
+const VIEWS = {};
+function setupViews(){
+  const P=(px,py)=>[px/2-MW/2, py/2-MH/2];
+  const at=(px,py,dy)=>{ const [x,z]=P(px,py); return [x, hAt(x,z)+dy, z]; };
+  VIEWS.overzicht = {p:[500,1500,2100], t:[0,0,100]};
+  { const t=at(1960,4700,0); VIEWS.dorp={p:[t[0]+150,130,t[2]+230], t}; }
+  { const t=at(2000,5390,4); VIEWS.kasteel={p:[t[0]+75,45,t[2]-95], t}; }
+  { const p=at(1972,5235,1.75), t=at(1975,5345,7); VIEWS.poort={p,t}; }
+  { const t=at(3100,4150,0); VIEWS.kruis={p:[t[0]-170,140,t[2]+200], t}; }
+  { const t=at(880,1700,0); VIEWS.noord={p:[t[0]+200,150,t[2]+240], t}; }
+  { const t=at(1150,5850,0); VIEWS.beek={p:[t[0]+260,110,t[2]-230], t}; }
+  { const p=at(1640,4362,1.75), t=at(1760,4418,2.4); VIEWS.weg={p,t}; }
+}
+async function build(){
+  setStatus('Kaartgegevens laden…');
+  const [hImg, cImg, b, t, w] = await Promise.all([loadImg('height.png'), loadImg('cls.png'), fetch('buildings.json').then(r=>r.json()), fetch('trees.json').then(r=>r.json()), fetch('water.json').then(r=>r.json())]);
+  BLD=b; TREES=t; WAT=w; [MW,MH]=w.size; HN=hImg.width; HM=hImg.height;
+  const hp=pixels(hImg); HGT=new Float32Array(HN*HM); for(let i=0;i<HN*HM;i++) HGT[i]=hp[i*4]/20;
+  const cp=pixels(cImg); CLS=new Uint8Array(MW*MH); for(let i=0;i<MW*MH;i++) CLS[i]=cp[i*4];
+  setStatus('De hemel wordt geschilderd…'); await frame(); buildSky();
+  setStatus('Akkers, weiden en wegen worden uitgezet…'); await frame(); await buildTerrain();
+  setStatus('Beken en grachten worden gegraven…'); await frame(); buildWater();
+  setStatus('De hoeven worden opgetrokken…'); await frame();
+  BLD.forEach(addFarm); scene.add(buildGroup); mergeStatic(buildGroup);
+  setStatus('Het kasteel wordt gemetseld…'); await frame();
+  const cg=buildCastle(); mergeStatic(cg);
+  setStatus('Bomen en hagen worden geplant…'); await frame();
+  setupViews(); setupTrees(); setupProps(); initCover();
+  const lg=document.getElementById('legend');
+  [['Rogge, gemaaid','#ccb67e'],['Tarwe','#c4aa62'],['Haver','#9ea25e'],['Vlas in bloei','#7c8eb4'],['Klaver','#5c7c3c'],['Aardappelen','#466432'],['Braak','#84684c'],['Weide / hooiland','#64863e'],['Boomgaard','#5e803a'],['Moestuin','#6c5e44']]
+    .forEach(([n,c])=>lg.insertAdjacentHTML('beforeend',`<span><i style="background:${c}"></i>${n}</span>`));
+}
+
+/* ---------- camera ---------- */
+let anim=null;
+function goView(name){ const v=VIEWS[name]; anim={from:{p:camera.position.clone(),t:controls.target.clone()}, to:{p:new THREE.Vector3(...v.p),t:new THREE.Vector3(...v.t)}, t0:performance.now()};
+  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('on',b.dataset.view===name)); }
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>goView(b.dataset.view)));
+const rotBtn=document.getElementById('rot'); rotBtn.onclick=()=>{ controls.autoRotate=!controls.autoRotate; controls.autoRotateSpeed=.5; rotBtn.classList.toggle('on',controls.autoRotate); };
+const qBtn=document.getElementById('qual'); qBtn.classList.toggle('on',HQ);
+qBtn.onclick=()=>{ HQ=!HQ; qBtn.classList.toggle('on',HQ); renderer.setPixelRatio(Math.min(devicePixelRatio, HQ?2:1.25)); sun.shadow.mapSize.set(HQ?4096:2048,HQ?4096:2048); sun.shadow.map?.dispose(); sun.shadow.map=null; resize(); updateCover(true); updateTrees(true); };
+document.getElementById('hide').onclick=()=>{ document.getElementById('panel').style.display='none'; document.getElementById('show').style.display='block'; };
+document.getElementById('show').onclick=()=>{ document.getElementById('panel').style.display=''; document.getElementById('show').style.display='none'; };
+function resize(){ const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+addEventListener('resize',resize);
+
+(async()=>{
+  try { await build(); } catch(e){ console.error(e); setStatus('Er ging iets mis bij het opbouwen: '+e.message); return; }
+  resize();
+  const v=VIEWS.overzicht; camera.position.set(...v.p); controls.target.set(...v.t); controls.update();
+  updateTrees(true);
+  document.getElementById('load').remove();
+  let last=0;
+  renderer.setAnimationLoop((now)=>{
+    if(anim){ const k=Math.min(1,(now-anim.t0)/2200), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+      camera.position.lerpVectors(anim.from.p,anim.to.p,e); controls.target.lerpVectors(anim.from.t,anim.to.t,e); if(k>=1) anim=null; }
+    controls.update();
+    const gy = hAt(camera.position.x, camera.position.z) + 1.2; if(camera.position.y < gy) camera.position.y = gy;
+    // schaduwkader volgt het richtpunt
+    const t=controls.target, dist=camera.position.distanceTo(t), ext=Math.min(900, Math.max(120, dist*0.75));
+    sun.position.copy(t).addScaledVector(SUN_DIR, 800); sun.target.position.copy(t); sun.target.updateMatrixWorld();
+    const sc=sun.shadow.camera; if(Math.abs(sc.right-ext)>1){ sc.left=-ext; sc.right=ext; sc.top=ext; sc.bottom=-ext; sc.updateProjectionMatrix(); }
+    if(now-last>300){ updateCover(false); updateTrees(false); last=now; }
+    renderer.render(scene,camera); });
+  window.__ready = true;
+})();
+</script>
 </body>
 </html>
