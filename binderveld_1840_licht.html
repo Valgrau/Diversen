@@ -108,11 +108,11 @@ const clsAt = (X,Z) => { const x=Math.floor((X+MW/2)*CW/MW), z=Math.floor((Z+MH/
 /* ---------- renderer ---------- */
 const canvas = document.getElementById('c');
 let renderer;
-try { renderer = new THREE.WebGLRenderer({canvas, antialias:false, powerPreference:'high-performance', logarithmicDepthBuffer:true}); }
+try { renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance', logarithmicDepthBuffer:true}); }
 catch(e){ setStatus('Deze browser ondersteunt geen WebGL, de 3D-impressie kan niet getoond worden.'); throw e; }
 const isMobile = matchMedia('(pointer:coarse)').matches;
 let HQ = false;
-renderer.setPixelRatio(Math.min(devicePixelRatio, HQ?1.25:0.7));
+renderer.setPixelRatio(Math.min(devicePixelRatio, HQ?2:1));
 renderer.shadowMap.enabled = false; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.62;
 
@@ -793,7 +793,7 @@ document.getElementById('compass').onclick=()=>{ controls.autoRotate=false; rotB
 }
 addEventListener('keydown',e=>{ if(e.key==='Escape'){ controls.autoRotate=false; anim=null; rotBtn.classList.remove('on'); } });
 const qBtn=document.getElementById('qual'); qBtn.classList.toggle('on',HQ);
-qBtn.onclick=()=>{ HQ=!HQ; qBtn.classList.toggle('on',HQ); renderer.setPixelRatio(Math.min(devicePixelRatio, HQ?1.25:0.7)); sun.shadow.mapSize.set(HQ?4096:2048,HQ?4096:2048); sun.shadow.map?.dispose(); sun.shadow.map=null; resize(); updateCover(true); updateTrees(true); };
+qBtn.onclick=()=>{ HQ=!HQ; qBtn.classList.toggle('on',HQ); renderer.setPixelRatio(Math.min(devicePixelRatio, HQ?2:1)); sun.shadow.mapSize.set(HQ?4096:2048,HQ?4096:2048); sun.shadow.map?.dispose(); sun.shadow.map=null; resize(); updateCover(true); updateTrees(true); };
 document.getElementById('hide').onclick=()=>{ document.getElementById('panel').style.display='none'; document.getElementById('show').style.display='block'; };
 document.getElementById('show').onclick=()=>{ document.getElementById('panel').style.display=''; document.getElementById('show').style.display='none'; };
 function resize(){ const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
